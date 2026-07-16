@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OH Business — Review & Feedback</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">OH</span>
+      <div class="brand-text">
+        <span class="brand-name">Business</span>
+        <span class="brand-sub">Account</span>
+      </div>
+    </div>
+
+    <button class="mobile-toggle">☰ Mobile View</button>
+
+    <nav class="nav" id="nav">
+      <a href="#" class="nav-item" data-page="Dashboard"><span class="nav-icon">▦</span> Dashboard</a>
+      <a href="#" class="nav-item" data-page="Orders"><span class="nav-icon">📦</span> Orders</a>
+      <a href="#" class="nav-item" data-page="Menu"><span class="nav-icon">✕</span> Menu</a>
+      <a href="#" class="nav-item" data-page="Analytics"><span class="nav-icon">📈</span> Analytics</a>
+      <a href="#" class="nav-item" data-page="Loyalty"><span class="nav-icon">★</span> Loyalty</a>
+      <a href="#" class="nav-item" data-page="Catalog"><span class="nav-icon">▤</span> Catalog</a>
+      <a href="#" class="nav-item" data-page="Meals"><span class="nav-icon">🍽</span> Meals</a>
+      <a href="#" class="nav-item" data-page="Marketing"><span class="nav-icon">📣</span> Marketing</a>
+      <a href="#" class="nav-item" data-page="Offers"><span class="nav-icon">◎</span> Offers</a>
+      <a href="#" class="nav-item" data-page="Staff"><span class="nav-icon">☺</span> Staff</a>
+      <a href="#" class="nav-item active" data-page="Reviews"><span class="nav-icon">★</span> Reviews</a>
+      <a href="#" class="nav-item" data-page="Transactions"><span class="nav-icon">≡</span> Transactions</a>
+      <a href="#" class="nav-item" data-page="Inventory"><span class="nav-icon">▥</span> Inventory</a>
+      <a href="#" class="nav-item" data-page="Profile"><span class="nav-icon">☺</span> Profile</a>
+    </nav>
+
+    <button class="withdraw-btn">⬇ Withdraw Funds</button>
+
+    <div class="sidebar-footer">
+      <a href="#" class="nav-item small">? Help</a>
+      <a href="#" class="nav-item small">⏻ Logout</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <header class="topbar">
+      <div class="search">
+        <input type="text" placeholder="Search anything...">
+      </div>
+      <div class="topbar-actions">
+        <div class="icon-btn"><span>🎧</span><small>Support</small></div>
+        <div class="icon-btn"><span>🔔</span><small>Notifications</small></div>
+        <div class="icon-btn"><span>⚙</span><small>Settings</small></div>
+        <div class="icon-btn"><span>☺</span><small>Profile</small></div>
+      </div>
+    </header>
+
+    <section class="page-head">
+      <div>
+        <h1>Review & Feedback</h1>
+        <p class="subtitle">Monitor guest sentiment, respond to feedback, and identify areas for improvement.</p>
+      </div>
+      <div class="page-actions">
+        <select id="dateRange" class="date-range">
+          <option>Last 7 Days</option>
+          <option selected>Last 30 Days</option>
+          <option>Last 90 Days</option>
+          <option>This Year</option>
+        </select>
+        <button id="exportBtn" class="export-btn">⬇ Export Report</button>
+      </div>
+    </section>
+
+    <!-- STAT CARDS -->
+    <section class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Average Rating</span>
+          <span class="pill pill-up">▲ 2.4%</span>
+        </div>
+        <div class="stat-value"><span id="avgRating">4.8</span>/5 <span class="stars">★★★★★</span></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Total Reviews</span>
+          <span class="pill pill-up">▲ 12%</span>
+        </div>
+        <div class="stat-value" id="totalReviews">1,420</div>
+        <div class="stat-foot">All-time count</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Response Rate</span>
+          <span class="pill pill-up">▲ 5%</span>
+        </div>
+        <div class="stat-value" id="responseRate">98%</div>
+        <div class="stat-foot">Target: 95%</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <span class="stat-label">Sentiment Score</span>
+          <span class="pill pill-badge">Positive</span>
+        </div>
+        <div class="stat-value stat-green"><span id="sentiment">92</span>%</div>
+        <div class="sentiment-bar"><div class="sentiment-fill" style="width:92%"></div></div>
+      </div>
+    </section>
+
+    <!-- MIDDLE ROW -->
+    <section class="content-grid">
+      <div class="left-col">
+        <div class="card rating-dist">
+          <h3>Rating Distribution</h3>
+          <div id="ratingBars" class="rating-bars"></div>
+        </div>
+
+        <div class="card promo-card">
+          <h4>Turn feedback into loyalty</h4>
+          <p>Responding to reviews within 24h increases return visits by 30%.</p>
+        </div>
+      </div>
+
+      <div class="card reviews-card">
+        <div class="reviews-header">
+          <h3>Recent Reviews</h3>
+          <div class="filter-tabs" id="filterTabs">
+            <button class="tab active" data-filter="all">All Reviews</button>
+            <button class="tab" data-filter="photos">With Photos</button>
+            <button class="tab" data-filter="negative">Negative Only</button>
+            <button class="tab" data-filter="unanswered">Unanswered</button>
+          </div>
+        </div>
+        <div id="reviewsList" class="reviews-list"></div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>CALORYE HIVE BUSINESS</h4>
+          <p>Advancing atmospheric precision in temporal management. We create digital environments that respect the fluidity of human attention and the rigidity of time.</p>
+          <div class="social-icons">
+            <span>f</span><span>✳</span><span>◐</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h5>SERVICES</h5>
+          <a href="#">Temporal Audits</a>
+          <a href="#">Atmospheric UI</a>
+          <a href="#">Precision Scheduling</a>
+          <a href="#">Focus Flux</a>
+        </div>
+        <div class="footer-col">
+          <h5>COMPANY</h5>
+          <a href="#">Our Philosophy</a>
+          <a href="#">Global Offices</a>
+          <a href="#">Research Lab</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer-col">
+          <h5>LEGAL</h5>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Settings</a>
+          <a href="#">Ethics Charter</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Calorye Hive Business. All rights reserved.</span>
+        <span>PRECISION IS PARAMOUNT · GLOBAL CONSCIOUSNESS</span>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
