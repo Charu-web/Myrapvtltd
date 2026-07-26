@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter + Playfair Display are loaded from index.html (preconnected to Google Fonts) */
+
+:root {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.primary.400') transparent;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: theme('colors.primary.300'); border-radius: 999px; }
+html.dark ::-webkit-scrollbar-thumb { background: theme('colors.primary.700'); }
+
+body {
+  @apply font-sans text-ink bg-surface antialiased transition-colors duration-300;
+}
+html.dark body {
+  @apply bg-[#0f1410] text-gray-100;
+}
+
+/* Respect reduced-motion preferences site-wide */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible keyboard focus everywhere (WCAG) */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid theme('colors.accent.400');
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@layer components {
+  .container-x {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* --- Typography helpers --- */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary-600 dark:text-secondary-300;
+  }
+  .heading-xl {
+    @apply font-display font-bold leading-[1.05] tracking-tight text-ink dark:text-white;
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 via-primary-500 to-secondary-500;
+  }
+
+  /* --- Buttons --- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 font-semibold text-sm
+    transition-all duration-300 ease-premium disabled:opacity-50 disabled:cursor-not-allowed
+    focus-visible:outline-2 focus-visible:outline-accent-400 active:scale-[0.97];
+  }
+  .btn-primary {
+    @apply btn text-white bg-gradient-to-r from-primary-600 to-primary-500 shadow-glow
+    hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_12px_32px_-4px_rgba(46,125,50,0.5)] hover:-translate-y-0.5;
+  }
+  .btn-secondary {
+    @apply btn text-primary-900 bg-gradient-to-r from-secondary-400 to-secondary-300 shadow-card
+    hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+  .btn-accent {
+    @apply btn text-ink bg-gradient-to-r from-accent-400 to-accent-300 shadow-card hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+  .btn-outline {
+    @apply btn border-2 border-white/70 text-white hover:bg-white/10 backdrop-blur-sm;
+  }
+  .btn-ghost {
+    @apply btn border border-primary-200 text-primary-700 hover:bg-primary-50 dark:border-white/10 dark:text-gray-100 dark:hover:bg-white/5;
+  }
+  .btn-dark {
+    @apply btn text-white bg-ink hover:bg-primary-700;
+  }
+  .btn-icon {
+    @apply inline-flex items-center justify-center rounded-full transition-all duration-300 ease-premium active:scale-90;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-gray-200 bg-white/80 px-4 py-2.5 text-sm placeholder:text-gray-400
+    focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition
+    dark:bg-white/5 dark:border-white/10 dark:text-gray-100 dark:placeholder:text-gray-500;
+  }
+
+  /* --- Surfaces --- */
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-black/[0.04]
+    dark:bg-white/[0.03] dark:border-white/10;
+  }
+  .card-hover {
+    @apply transition-all duration-500 ease-premium hover:shadow-card-hover hover:-translate-y-1.5;
+  }
+
+  .glass {
+    @apply bg-white/60 backdrop-blur-xl border border-white/50 shadow-glass
+    dark:bg-white/[0.06] dark:border-white/10;
+  }
+  .glass-dark {
+    @apply bg-ink/40 backdrop-blur-xl border border-white/10 text-white shadow-glass;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 text-[11px] font-bold tracking-wide px-2.5 py-1 rounded-full;
+  }
+
+  .section-pad {
+    @apply py-14 md:py-20;
+  }
+
+  /* --- Skeleton loading shimmer --- */
+  .skeleton {
+    @apply relative overflow-hidden bg-gray-200/70 dark:bg-white/10 rounded-xl;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+    animation: shimmer 1.6s infinite;
+    background-size: 1000px 100%;
+  }
+
+  /* --- Marquee (Instagram / brand strip) --- */
+  .marquee-track {
+    @apply flex w-max animate-marquee;
+  }
+  .group:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
