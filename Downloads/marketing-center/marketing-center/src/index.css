@@ -19,7 +19,7 @@
     width: 8px;
     height: 8px;
   }
-
+d
   ::-webkit-scrollbar-thumb {
     @apply bg-ink-300 rounded-full;
   }
