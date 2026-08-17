@@ -1,0 +1,451 @@
+// Prisma Schema for LoanPilot CRM
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  url       String?
+  legalName String?
+  email     String
+  phone     String
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users             User[]
+  leads             Lead[]
+  loanApplications  LoanApplication[]
+  banks             Bank[]
+  partners          Partner[]
+  commissionSchemes CommissionScheme[]
+  documents         Document[]
+  tasks             Task[]
+  employees         Employee[]
+  expenses          Expense[]
+  transactions      Transaction[]
+  auditLogs         AuditLog[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String       @unique
+  password       String
+  fullName       String
+  phone          String
+  role           String       @default("SALES_AGENT") // ADMIN, SALES_AGENT, OPERATIONS, FINANCE, HR, PARTNER, BANKER
+  avatar         String?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  assignedLeads        Lead[]            @relation("AssignedLeads")
+  assignedApplications LoanApplication[] @relation("AssignedApplications")
+  assignedTasks        Task[]            @relation("AssignedTasks")
+  loggedCalls          Call[]            @relation("CallerUser")
+  sentMessages         Message[]         @relation("SenderUser")
+  notifications        Notification[]
+  auditLogs            AuditLog[]
+  employeeProfile      Employee?
+  partnerProfile       Partner?
+}
+
+model Lead {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  leadId         String       @unique // e.g. LP-LD-1001
+  customerName   String
+  phone          String
+  email          String?
+  city           String?
+  loanType       String // Home Loan, Personal Loan, Business Loan, etc.
+  amount         Float
+  source         String // Website, Referral, Partner, Cold Call, Facebook, Google
+  status         String       @default("New") // New, Contacted, Interested, Documents Pending, Application Started, Login, Sanctioned, Disbursed, Rejected, Lost
+  assignedToId   String?
+  assignedTo     User?        @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  nextFollowUp   DateTime?
+  notes          String?
+  createdDate    DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  activities   LeadActivity[]
+  applications LoanApplication[]
+  documents    Document[]
+  tasks        Task[]
+  calls        Call[]
+  messages     Message[]
+  commissions  Commission[]
+}
+
+model LeadActivity {
+  id        String   @id @default(uuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String // STATUS_CHANGE, NOTE, CALL, MESSAGE, DOCUMENT_UPLOAD
+  title     String
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model Bank {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  code           String
+  logo           String?
+  active         Boolean      @default(true)
+  minROI         Float        @default(8.5)
+  maxROI         Float        @default(14.0)
+  processingFee  String       @default("0.5% + GST")
+  averageTAT     Int          @default(5) // days
+  rmName         String?
+  rmPhone        String?
+  rmEmail        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  products     LoanProduct[]
+  applications LoanApplication[]
+  schemes      Scheme[]
+}
+
+model LoanProduct {
+  id        String   @id @default(uuid())
+  bankId    String
+  bank      Bank     @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  name      String // Home Loan Standard, MSME Express, Business Prime
+  code      String
+  category  String // Home Loan, Business Loan, Personal Loan
+  minAmount Float
+  maxAmount Float
+  minTenure Int // months
+  maxTenure Int // months
+  minROI    Float
+  maxROI    Float
+  createdAt DateTime @default(now())
+
+  applications LoanApplication[]
+}
+
+model LoanApplication {
+  id                String       @id @default(uuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  applicationNumber String       @unique // e.g. LP-APP-2026-001
+  leadId            String
+  lead              Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  bankId            String
+  bank              Bank         @relation(fields: [bankId], references: [id])
+  productId         String?
+  product           LoanProduct? @relation(fields: [productId], references: [id])
+  loanType          String
+  amount            Float
+  tenure            Int // months
+  roi               Float
+  assignedEmployeeId String?
+  assignedEmployee  User?        @relation("AssignedApplications", fields: [assignedEmployeeId], references: [id])
+  partnerId         String?
+  partner           Partner?     @relation(fields: [partnerId], references: [id])
+  status            String       @default("Draft") // Draft, Login, Processing, Query Raised, Sanctioned, Rejected, Disbursed
+  queryNotes        String?
+  sanctionedAmount  Float?
+  disbursedAmount   Float?
+  loginDate         DateTime?
+  sanctionDate      DateTime?
+  disbursementDate  DateTime?
+  tatDays           Int          @default(0)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  documents   Document[]
+  tasks       Task[]
+  commissions Commission[]
+}
+
+model Partner {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  partnerCode    String       @unique // e.g. PTR-101
+  name           String
+  type           String       @default("Sub-DSA") // Sub-DSA, Referral Partner, Connector, Franchise
+  phone          String
+  email          String
+  city           String?
+  commissionRate Float        @default(70.0) // % share of payout
+  userId         String?      @unique
+  user           User?        @relation(fields: [userId], references: [id])
+  totalLeads     Int          @default(0)
+  totalDisbursed Float        @default(0.0)
+  totalEarned    Float        @default(0.0)
+  status         String       @default("Active")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  applications LoanApplication[]
+}
+
+model CommissionScheme {
+  id                     String       @id @default(uuid())
+  organizationId         String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name                   String // e.g. Standard Home Loan Scheme
+  loanType               String
+  minAmount              Float        @default(0)
+  maxAmount              Float        @default(100000000)
+  payInPercent           Float        @default(1.5) // % from bank
+  partnerSplitPercent    Float        @default(70.0) // % share to partner
+  employeeIncentivePercent Float      @default(5.0) // % incentive to agent
+  createdAt              DateTime     @default(now())
+}
+
+model Commission {
+  id                String          @id @default(uuid())
+  applicationId     String
+  application       LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  leadId            String?
+  lead              Lead?           @relation(fields: [leadId], references: [id])
+  disbursedAmount   Float
+  payInPercent      Float
+  totalPayIn        Float
+  partnerPayout     Float           @default(0)
+  employeeIncentive Float           @default(0)
+  gstAmount         Float           @default(0) // 18% GST
+  tdsAmount         Float           @default(0) // 5% TDS
+  netPayout         Float
+  status            String          @default("Pending") // Pending, Approved, Paid, Reconciled
+  paymentDate       DateTime?
+  referenceNo       String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  transactions CommissionTransaction[]
+}
+
+model CommissionTransaction {
+  id           String     @id @default(uuid())
+  commissionId String
+  commission   Commission @relation(fields: [commissionId], references: [id], onDelete: Cascade)
+  amount       Float
+  type         String // PAY_IN, PARTNER_PAYOUT, AGENT_INCENTIVE, TAX_DEDUCTION
+  recipient    String // Bank, Partner Name, Agent Name, Govt Tax
+  referenceNo  String?
+  status       String     @default("Completed")
+  date         DateTime   @default(now())
+}
+
+model Document {
+  id             String           @id @default(uuid())
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  type           String // PAN, Aadhaar, Bank Statement, Salary Slip, ITR, Property, GST, Other
+  fileUrl        String
+  fileSize       String           @default("1.2 MB")
+  mimeType       String           @default("application/pdf")
+  status         String           @default("Verified") // Pending, Verified, Rejected, Expired
+  expiryDate     DateTime?
+  leadId         String?
+  lead           Lead?            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  applicationId  String?
+  application    LoanApplication? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  uploadedAt     DateTime         @default(now())
+}
+
+model Task {
+  id            String           @id @default(uuid())
+  organizationId String
+  organization  Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  priority      String           @default("Medium") // Low, Medium, High, Urgent
+  status        String           @default("Pending") // Pending, In Progress, Completed, Overdue
+  dueDate       DateTime
+  assignedToId  String
+  assignedTo    User             @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  leadId        String?
+  lead          Lead?            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  applicationId String?
+  application   LoanApplication? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model Call {
+  id        String   @id @default(uuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  callerId  String
+  caller    User     @relation("CallerUser", fields: [callerId], references: [id])
+  callType  String   @default("Outbound") // Outbound, Inbound
+  duration  Int      @default(120) // in seconds
+  result    String   @default("Connected") // Connected, No Answer, Busy, Follow-up Required, Interested, Not Interested
+  notes     String?
+  date      DateTime @default(now())
+}
+
+model Message {
+  id         String           @id @default(uuid())
+  leadId     String
+  lead       Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  senderId   String
+  sender     User             @relation("SenderUser", fields: [senderId], references: [id])
+  templateId String?
+  template   MessageTemplate? @relation(fields: [templateId], references: [id])
+  channel    String           @default("WhatsApp") // WhatsApp, SMS, Email
+  content    String
+  status     String           @default("Delivered") // Sent, Delivered, Read, Failed
+  sentAt     DateTime         @default(now())
+}
+
+model MessageTemplate {
+  id        String    @id @default(uuid())
+  title     String // Welcome Lead, Document Request, Sanction Alert
+  code      String    @unique
+  category  String    @default("Followup")
+  content   String
+  createdAt DateTime  @default(now())
+
+  messages Message[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, WARNING, SUCCESS, URGENT
+  read      Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
+model Employee {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  empCode        String       @unique // e.g. EMP-201
+  userId         String       @unique
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department     String       @default("Sales") // Sales, Operations, Finance, HR
+  designation    String       @default("Loan Specialist")
+  joiningDate    DateTime     @default(now())
+  salary         Float        @default(45000)
+  targetAmount   Float        @default(5000000)
+  achievedAmount Float        @default(3200000)
+  createdAt      DateTime     @default(now())
+
+  attendances Attendance[]
+  leaves      Leave[]
+}
+
+model Attendance {
+  id         String   @id @default(uuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date       DateTime @default(now())
+  checkIn    String   @default("09:30 AM")
+  checkOut   String?  @default("06:30 PM")
+  status     String   @default("Present") // Present, Absent, Half Day, Late
+  location   String?  @default("Connaught Place Office, Delhi")
+  selfieUrl  String?
+}
+
+model Leave {
+  id         String   @id @default(uuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type       String   @default("Casual Leave") // Casual Leave, Sick Leave, Earned Leave
+  startDate  DateTime
+  endDate    DateTime
+  reason     String
+  status     String   @default("Approved") // Pending, Approved, Rejected
+  appliedAt  DateTime @default(now())
+}
+
+model Expense {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category       String // Travel, Marketing, Office Supplies, Software, Partner Commission
+  amount         Float
+  date           DateTime     @default(now())
+  description    String
+  status         String       @default("Approved")
+  requestedBy    String
+  createdAt      DateTime     @default(now())
+}
+
+model Transaction {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type           String // Income, Expense
+  category       String
+  amount         Float
+  reference      String?
+  date           DateTime     @default(now())
+  status         String       @default("Completed")
+  description    String?
+}
+
+model Scheme {
+  id            String   @id @default(uuid())
+  bankId        String
+  bank          Bank     @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  schemeName    String
+  product       String // Home Loan, Business Loan, LAP
+  states        String // All India, Delhi NCR, Maharashtra, Karnataka
+  minAmount     Float
+  maxAmount     Float
+  minTenure     Int      @default(12)
+  maxTenure     Int      @default(240)
+  minROI        Float
+  maxROI        Float
+  cibilScore    Int      @default(650)
+  foir          Float    @default(60.0) // %
+  minVintage    Int      @default(2) // years business vintage
+  propertyTypes String   @default("Residential, Commercial, Industrial")
+  usps          String?  @default("Fast 48h sanction, Zero login fee, High LTV up to 85%")
+  rmContact     String?
+  status        String   @default("Active")
+  effectiveFrom DateTime @default(now())
+  circularUrl   String?
+  createdAt     DateTime @default(now())
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  action         String // CREATE_LEAD, UPDATE_STATUS, PAYOUT_RELEASED, LOGIN
+  entity         String // Lead, Application, Commission, User
+  entityId       String?
+  details        String?
+  timestamp      DateTime     @default(now())
+}
+
+model SubscriptionPlan {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  price     Float
+  userLimit Int
+  features  String // JSON or comma-separated string
+  createdAt DateTime @default(now())
+}
