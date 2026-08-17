@@ -1,0 +1,19 @@
+# Hostinger Apache / LiteSpeed Reverse Proxy Configuration for Next.js Node App
+DirectoryIndex disabled
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Allow direct access to static files if present
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # Forward all other requests to Node.js application running on PORT 3000
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
+</IfModule>
+
+# Prevent directory browsing (fixes 403 Forbidden directory listing error)
+Options -Indexes
