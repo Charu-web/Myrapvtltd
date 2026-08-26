@@ -112,7 +112,8 @@ const getStoredLeads = () => {
   const stored = localStorage.getItem("leadflow_leads");
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : DEFAULT_LEADS;
     } catch {
       return DEFAULT_LEADS;
     }
@@ -300,7 +301,8 @@ const convertLeadToCustomer = async (lead) => {
   const customersRaw = localStorage.getItem("leadflow_customers");
   let customers = [];
   try {
-    customers = customersRaw ? JSON.parse(customersRaw) : [];
+    const parsed = customersRaw ? JSON.parse(customersRaw) : [];
+    customers = Array.isArray(parsed) ? parsed : [];
   } catch {
     customers = [];
   }
@@ -339,7 +341,8 @@ const convertLeadToDeal = async (lead, dealStage = "proposal") => {
   const dealsRaw = localStorage.getItem("leadflow_deals");
   let deals = [];
   try {
-    deals = dealsRaw ? JSON.parse(dealsRaw) : [];
+    const parsed = dealsRaw ? JSON.parse(dealsRaw) : [];
+    deals = Array.isArray(parsed) ? parsed : [];
   } catch {
     deals = [];
   }

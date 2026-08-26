@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Serve existing files and directories directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Exclude static assets from SPA rewrite so missing assets return 404 header instead of index.html
+  RewriteCond %{REQUEST_URI} \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|json|wasm)$ [NC]
+  RewriteRule ^ - [L]
+
+  # Fallback all SPA routes (/login, /dashboard, etc.) to index.html
+  RewriteRule ^ index.html [L]
+</IfModule>

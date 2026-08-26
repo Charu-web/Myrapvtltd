@@ -1,11 +1,13 @@
-import{c as F,C as Ie,a as Pt,b as At,B as ir,F as St,d as Ot,U as Tt,j as a,R as f,g as Ye,r as P,u as Xe,m as or,P as lr,M as cr,e as dr,f as ur,S as Rt,h as Ct,i as _t,k as mr}from"./index-CMn9DqNx.js";
+import{c as F,n as Ie,a as Pt,b as At,B as ir,F as St,d as Ot,U as Tt,j as a,R as f,g as Ye,r as P,u as Xe,m as or,P as lr,M as cr,e as dr,f as ur,S as Rt,h as Ct,i as _t,k as mr}from"./index-CMn9DqNx.js";
 import{f as W}from"./formatCurrency-ChTmm5Hb.js";
 
 // Helper for local data management
 const getStored = (key, fallback) => {
   try {
     const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : fallback;
+    if (!val) return fallback;
+    const parsed = JSON.parse(val);
+    return Array.isArray(parsed) ? parsed : fallback;
   } catch {
     return fallback;
   }
@@ -137,20 +139,20 @@ function Dashboard() {
   }, []);
 
   // Compute KPI Counts & Progress Metrics
-  const leadsCount = leads.length || 6;
-  const leadsCompleted = leads.filter(l => l.status === "won" || l.status === "close_by").length || 2;
+  const leadsCount = (leads || []).length || 6;
+  const leadsCompleted = (leads || []).filter(l => l && (l.status === "won" || l.status === "close_by")).length || 2;
   const leadsPct = Math.round((leadsCompleted / leadsCount) * 100);
 
-  const followupsCount = leads.filter(l => l.nextFollowupDate).length || 5;
+  const followupsCount = (leads || []).filter(l => l && l.nextFollowupDate).length || 5;
   const followupsCompleted = 3;
   const followupsPct = Math.round((followupsCompleted / followupsCount) * 100);
 
-  const tasksCount = tasks.length || 5;
-  const tasksCompleted = tasks.filter(t => t.completed).length || 1;
+  const tasksCount = (tasks || []).length || 5;
+  const tasksCompleted = (tasks || []).filter(t => t && t.completed).length || 1;
   const tasksPct = Math.round((tasksCompleted / tasksCount) * 100);
 
-  const todosCount = todos.length || 5;
-  const todosCompleted = todos.filter(t => t.completed).length || 1;
+  const todosCount = (todos || []).length || 5;
+  const todosCompleted = (todos || []).filter(t => t && t.completed).length || 1;
   const todosPct = Math.round((todosCompleted / todosCount) * 100);
 
   // Toggle Task Completion
@@ -614,7 +616,7 @@ function Dashboard() {
               // Leads Table / Card List
               a.jsx("div", {
                 className: "space-y-3 overflow-x-auto",
-                children: filteredLeads.length === 0 ? a.jsx("div", {
+                children: (filteredLeads || []).length === 0 ? a.jsx("div", {
                   className: "py-10 text-center text-xs text-slate-400 font-medium",
                   children: "No active leads in this stage."
                 }) : filteredLeads.map(l => a.jsxs("div", {
