@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoanPilot — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- FOUC Prevention: apply theme before paint -->
+<script>try{var _t=localStorage.getItem('crm_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<script src="/config.js?v=2.1"></script>
+<script src="/theme.js?v=2.1"></script>
+<style>
+  :root{
+    --navy-900:#0b1d3a;
+    --navy-800:#123163;
+    --blue-700:#1f4fd6;
+    --blue-600:#2f62ee;
+    --blue-500:#5b82f5;
+    --blue-100:#e7edfd;
+    --ink:#0f1a30;
+    --slate-600:#5b6472;
+    --slate-400:#8992a1;
+    --line:#e3e7ee;
+    --paper:#ffffff;
+    --amber:#f5a524;
+    --danger:#d64545;
+    --radius-lg:16px;
+    --radius-md:12px;
+    --radius-sm:9px;
+  }
+
+  [data-theme="dark"]{
+    --paper:#161b22;
+    --ink:#e6edf3;
+    --slate-600:#8b949e;
+    --slate-400:#6e7681;
+    --line:#30363d;
+    --blue-100:#162040;
+    --danger:#f87171;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+    transition:background-color 0.2s ease, color 0.2s ease;
+  }
+  h1,h2,h3,.brand-word{font-family:'Sora',system-ui,sans-serif;}
+
+  .screen{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    min-height:100vh;
+  }
+
+  /* ============ LEFT PANEL ============ */
+  .panel-promo{
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 85% 12%, rgba(255,255,255,0.10) 0, rgba(255,255,255,0) 40%),
+      linear-gradient(160deg, var(--blue-700) 0%, var(--navy-800) 62%, var(--navy-900) 100%);
+    color:#fff;
+    padding:44px 52px 40px;
+    display:flex;
+    flex-direction:column;
+  }
+  .promo-shape{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,0.06);
+  }
+  .promo-shape.s1{width:420px;height:420px;top:-140px;right:-120px;}
+  .promo-shape.s2{width:260px;height:260px;bottom:-80px;left:-90px;background:rgba(255,255,255,0.05);}
+  .promo-shape.s3{width:140px;height:140px;top:38%;right:6%;background:rgba(255,255,255,0.045);}
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+    z-index:2;
+  }
+  .brand-mark{
+    width:32px;height:32px;
+    border-radius:9px;
+    background:linear-gradient(135deg,#fff,#bcd0ff);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  }
+  .brand-mark svg{width:16px;height:16px;}
+  .brand-word{font-size:19px;font-weight:700;letter-spacing:-0.01em;}
+
+  .promo-body{
+    position:relative;
+    z-index:2;
+    margin-top:auto;
+    padding-top:60px;
+  }
+  .promo-heading{
+    font-size:38px;
+    line-height:1.18;
+    font-weight:700;
+    letter-spacing:-0.015em;
+    margin:0 0 30px;
+    max-width:420px;
+  }
+  .feature-list{
+    list-style:none;
+    margin:0 0 46px;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .feature-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .feature-icon{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:rgba(255,255,255,0.14);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .feature-icon svg{width:17px;height:17px;stroke:#fff;}
+  .feature-row span{font-size:14.5px;color:rgba(255,255,255,0.92);font-weight:500;}
+
+  .promo-illustration{
+    position:relative;
+    z-index:2;
+    align-self:flex-end;
+    width:170px;
+  }
+
+  /* ============ RIGHT PANEL ============ */
+  .panel-auth{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 32px;
+    overflow-y:auto;
+    position:relative;
+    background:var(--paper);
+  }
+  .auth-wrap{
+    width:100%;
+    max-width:380px;
+  }
+
+  .theme-toggle-header{
+    position:absolute;
+    top:20px;
+    right:24px;
+  }
+  .theme-toggle-btn{
+    width:36px;height:36px;border-radius:9px;border:1.5px solid var(--line);background:var(--paper);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;
+    transition:all 0.16s ease;line-height:1;
+  }
+  .theme-toggle-btn:hover{background:var(--line);transform:scale(1.05);}
+
+  .auth-heading{
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:-0.015em;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .auth-sub{
+    font-size:14.5px;
+    color:var(--slate-600);
+    margin:0 0 30px;
+  }
+
+  .field{margin-bottom:18px;}
+  .field-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:7px;
+  }
+  label{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .link-sm{
+    font-size:13px;
+    font-weight:600;
+    color:var(--blue-600);
+    text-decoration:none;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    font-family:inherit;
+  }
+  .link-sm:hover{text-decoration:underline;}
+
+  .input-shell{
+    position:relative;
+  }
+  input[type="email"],
+  input[type="password"],
+  input[type="text"]{
+    width:100%;
+    height:44px;
+    padding:0 14px;
+    font-size:14.5px;
+    font-family:inherit;
+    color:var(--ink);
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-sm);
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  input::placeholder{color:var(--slate-400);}
+  input:focus{
+    border-color:var(--blue-600);
+    box-shadow:0 0 0 3px var(--blue-100);
+  }
+  input.has-error{border-color:var(--danger);}
+  input.has-error:focus{box-shadow:0 0 0 3px rgba(214,69,69,0.12);}
+  .input-shell input[type="password"],
+  .input-shell input[type="text"].pw-field{padding-right:42px;}
+
+  .eye-btn{
+    position:absolute;
+    right:6px;top:50%;
+    transform:translateY(-50%);
+    width:32px;height:32px;
+    border:none;background:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:var(--slate-400);
+    border-radius:7px;
+  }
+  .eye-btn:hover{background:var(--line);color:var(--slate-600);}
+  .eye-btn svg{width:18px;height:18px;}
+
+  .error-text{
+    font-size:12.5px;
+    color:var(--danger);
+    margin-top:6px;
+    display:none;
+  }
+  .error-text.show{display:block;}
+
+  .alert-banner{
+    display:none;
+    align-items:flex-start;
+    gap:9px;
+    background:rgba(214,69,69,0.1);
+    border:1px solid rgba(214,69,69,0.25);
+    color:var(--danger);
+    font-size:13.5px;
+    padding:11px 13px;
+    border-radius:var(--radius-sm);
+    margin-bottom:18px;
+    line-height:1.4;
+  }
+  .alert-banner.show{display:flex;}
+  .alert-banner svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;}
+
+  .btn-primary{
+    width:100%;
+    height:46px;
+    border:none;
+    border-radius:var(--radius-sm);
+    background:linear-gradient(180deg, var(--blue-600), var(--blue-700));
+    color:#fff;
+    font-family:'Sora',inherit;
+    font-size:15px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    transition:filter .15s ease, transform .05s ease;
+    box-shadow:0 2px 8px rgba(31,79,214,0.25);
+  }
+  .btn-primary:hover{filter:brightness(1.06);}
+  .btn-primary:active{transform:translateY(1px);}
+  .btn-primary:disabled{opacity:.75;cursor:default;}
+  .btn-primary svg{width:16px;height:16px;transition:transform .15s ease;}
+  .btn-primary:hover svg{transform:translateX(2px);}
+
+  .spinner{
+    width:16px;height:16px;
+    border:2px solid rgba(255,255,255,0.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    display:none;
+  }
+  .spinner.show{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .otp-toggle{
+    display:block;
+    width:100%;
+    text-align:center;
+    margin-top:14px;
+    background:none;border:none;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--blue-600);
+    cursor:pointer;
+    padding:6px;
+  }
+  .otp-toggle:hover{text-decoration:underline;}
+
+  .divider-row{
+    display:flex;align-items:center;gap:12px;
+    margin:26px 0 16px;
+  }
+  .divider-row .line{flex:1;height:1px;background:var(--line);}
+  .divider-row span{font-size:13px;color:var(--slate-600);font-weight:500;}
+
+  .btn-outline{
+    width:100%;
+    height:44px;
+    border-radius:var(--radius-sm);
+    border:1.5px solid var(--blue-600);
+    background:var(--paper);
+    color:var(--blue-600);
+    font-family:'Sora',inherit;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .btn-outline:hover{background:var(--blue-100);}
+
+  .demo-box{
+    margin-top:30px;
+    padding:18px 18px 16px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    background:var(--paper);
+  }
+  .demo-title{
+    font-size:13.5px;
+    font-weight:700;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .demo-desc{
+    font-size:12.5px;
+    color:var(--slate-600);
+    line-height:1.5;
+    margin:0 0 14px;
+  }
+  .demo-desc code{
+    background:var(--line);
+    padding:1px 5px;
+    border-radius:4px;
+    font-size:12px;
+    color:var(--ink);
+    font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .demo-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+  .demo-card{
+    text-align:left;
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:var(--radius-sm);
+    padding:10px 11px;
+    cursor:pointer;
+    font-family:inherit;
+    transition:border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+  }
+  .demo-card:hover{border-color:var(--blue-500);box-shadow:0 0 0 3px var(--blue-100);}
+  .demo-card:active{transform:translateY(1px);}
+  .demo-card.loading{opacity:.6;pointer-events:none;}
+  .demo-role{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:2px;
+  }
+  .demo-detail{
+    display:block;
+    font-size:11.5px;
+    color:var(--slate-600);
+    line-height:1.35;
+  }
+
+  .toast{
+    position:fixed;
+    bottom:22px;left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ink);
+    color:var(--paper);
+    font-size:13.5px;
+    font-weight:500;
+    padding:11px 18px;
+    border-radius:10px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    z-index:50;
+    max-width:88vw;
+    text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:980px){
+    .screen{grid-template-columns:1fr;}
+    .panel-promo{
+      padding:34px 30px 34px;
+      min-height:auto;
+    }
+    .promo-heading{font-size:30px;}
+    .promo-body{padding-top:34px;}
+    .promo-illustration{width:120px;margin-top:20px;}
+    .panel-auth{padding:36px 24px 48px;}
+  }
+  @media (max-width:480px){
+    .panel-promo{padding:28px 22px 30px;}
+    .promo-heading{font-size:26px;}
+    .feature-row span{font-size:13.5px;}
+    .demo-grid{grid-template-columns:1fr;}
+    .auth-heading{font-size:23px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- ============ LEFT: PROMO PANEL ============ -->
+  <section class="panel-promo">
+    <div class="promo-shape s1"></div>
+    <div class="promo-shape s2"></div>
+    <div class="promo-shape s3"></div>
+
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 12l7-8 7 8-7 8-7-8z" fill="#1f4fd6"/></svg>
+      </span>
+      <span class="brand-word">LoanPilot</span>
+    </div>
+
+    <div class="promo-body">
+      <h1 class="promo-heading">Run your whole loan<br>business from one<br>screen.</h1>
+
+      <ul class="feature-list">
+        <li class="feature-row">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5m0 14l6-4 4 3 6-8"/></svg>
+          </span>
+          <span>Follow every lead from first contact to disbursal</span>
+        </li>
+        <li class="feature-row">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10m7 10V4m7 16v-7"/></svg>
+          </span>
+          <span>Live dashboards with payout &amp; commission tracking</span>
+        </li>
+        <li class="feature-row">
+          <span class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+          </span>
+          <span>Documents kept safe with role-based access</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Original mascot illustration: a friendly folder/document character -->
+    <svg class="promo-illustration" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="205" rx="55" ry="8" fill="rgba(0,0,0,0.18)"/>
+      <!-- legs -->
+      <rect x="78" y="150" width="14" height="42" rx="7" fill="#eef2ff"/>
+      <rect x="108" y="150" width="14" height="42" rx="7" fill="#eef2ff"/>
+      <rect x="72" y="188" width="24" height="10" rx="5" fill="#1f4fd6"/>
+      <rect x="104" y="188" width="24" height="10" rx="5" fill="#1f4fd6"/>
+      <!-- body: folder shape -->
+      <rect x="52" y="58" width="96" height="104" rx="14" fill="#f4f7ff"/>
+      <rect x="52" y="58" width="96" height="26" rx="13" fill="#dbe4ff"/>
+      <!-- face -->
+      <circle cx="82" cy="112" r="6.5" fill="#0b1d3a"/>
+      <circle cx="118" cy="112" r="6.5" fill="#0b1d3a"/>
+      <path d="M84 132q16 12 32 0" stroke="#0b1d3a" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <!-- arms -->
+      <rect x="30" y="96" width="14" height="42" rx="7" fill="#eef2ff" transform="rotate(-18 30 96)"/>
+      <rect x="156" y="88" width="14" height="46" rx="7" fill="#eef2ff" transform="rotate(28 156 88)"/>
+      <!-- thumbs up hand -->
+      <circle cx="176" cy="76" r="15" fill="#eef2ff"/>
+      <rect x="169" y="60" width="9" height="20" rx="4.5" fill="#eef2ff"/>
+      <!-- label text on body -->
+      <rect x="66" y="140" width="68" height="9" rx="4.5" fill="#c3d1ff"/>
+    </svg>
+  </section>
+
+  <!-- ============ RIGHT: AUTH PANEL ============ -->
+  <section class="panel-auth">
+    <div class="theme-toggle-header">
+      <button class="theme-toggle-btn" data-theme-toggle title="Switch theme" aria-label="Switch theme">
+        <span class="theme-icon">🌙</span>
+      </button>
+    </div>
+
+    <div class="auth-wrap">
+
+      <!-- ---- Password login form ---- -->
+      <div id="passwordView">
+        <h2 class="auth-heading">Welcome back</h2>
+        <p class="auth-sub">Sign in to your LoanPilot account</p>
+
+        <div class="alert-banner" id="loginAlert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span id="loginAlertText">That email and password combination doesn't match an account.</span>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <div class="field-row"><label for="email">Email address</label></div>
+            <div class="input-shell">
+              <input type="email" id="email" placeholder="you@company.com" autocomplete="email">
+            </div>
+            <div class="error-text" id="emailError">Enter a valid email address.</div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label for="password">Password</label>
+              <button type="button" class="link-sm" id="forgotBtn">Forgot password?</button>
+            </div>
+            <div class="input-shell">
+              <input type="password" id="password" class="pw-field" placeholder="Enter your password" autocomplete="current-password">
+              <button type="button" class="eye-btn" id="toggleEye" aria-label="Show password">
+                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="error-text" id="passwordError">Password must be at least 6 characters.</div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="signInBtn">
+            <span class="spinner" id="signInSpinner"></span>
+            <span id="signInLabel">Sign in</span>
+            <svg id="signInArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </form>
+
+        <button type="button" class="otp-toggle" id="showOtpBtn">Sign in with mobile OTP instead</button>
+
+        <div class="divider-row"><div class="line"></div><span>Don't have an account?</span><div class="line"></div></div>
+
+        <button type="button" class="btn-outline" id="trialBtn">Start free 15-day trial</button>
+      </div>
+
+      <!-- ---- Mobile OTP form ---- -->
+      <div id="otpView" style="display:none;">
+        <h2 class="auth-heading">Sign in with OTP</h2>
+        <p class="auth-sub">We'll text a one-time code to your phone</p>
+
+        <div id="otpStep1">
+          <div class="field">
+            <div class="field-row"><label for="phone">Mobile number</label></div>
+            <div class="input-shell">
+              <input type="text" id="phone" placeholder="98765 43210" autocomplete="tel">
+            </div>
+            <div class="error-text" id="phoneError">Enter a valid 10-digit mobile number.</div>
+          </div>
+          <button type="button" class="btn-primary" id="sendOtpBtn">
+            <span class="spinner" id="sendOtpSpinner"></span>
+            <span>Send code</span>
+          </button>
+        </div>
+
+        <div id="otpStep2" style="display:none;">
+          <div class="field">
+            <div class="field-row"><label for="otpCode">6-digit code</label></div>
+            <div class="input-shell">
+              <input type="text" id="otpCode" placeholder="••••••" maxlength="6" autocomplete="one-time-code">
+            </div>
+            <div class="error-text" id="otpError">Enter the 6-digit code.</div>
+          </div>
+          <button type="button" class="btn-primary" id="verifyOtpBtn">
+            <span class="spinner" id="verifyOtpSpinner"></span>
+            <span>Verify &amp; sign in</span>
+          </button>
+        </div>
+
+        <button type="button" class="otp-toggle" id="backToPasswordBtn">Sign in with password instead</button>
+      </div>
+
+      <!-- ---- Demo section ---- -->
+      <div class="demo-box">
+        <p class="demo-title">Try a demo</p>
+        <p class="demo-desc">Each role sees a different sidebar and landing page. Password for every demo: <code>demo@12345</code></p>
+        <div class="demo-grid">
+          <button class="demo-card" data-role="Admin / Owner">
+            <span class="demo-role">Admin / Owner</span>
+            <span class="demo-detail">Full access — settings, users, billing, all data</span>
+          </button>
+          <button class="demo-card" data-role="Sales agent">
+            <span class="demo-role">Sales agent</span>
+            <span class="demo-detail">Lead pipeline focus — own leads, tasks, follow-ups</span>
+          </button>
+          <button class="demo-card" data-role="Operations">
+            <span class="demo-role">Operations</span>
+            <span class="demo-detail">Loan applications and document review</span>
+          </button>
+          <button class="demo-card" data-role="Finance">
+            <span class="demo-role">Finance</span>
+            <span class="demo-detail">Commissions, payouts, wallet</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  if (window.CRMTheme) {
+    CRMTheme.set(CRMTheme.get());
+    CRMTheme.init('[data-theme-toggle]');
+  }
+
+  const API_BASE_URL = (function() {
+    if (typeof window !== 'undefined') {
+      if (window.API_BASE_URL) return window.API_BASE_URL.replace(/\/+$/, '');
+      if (window.ENV && window.ENV.API_BASE_URL) return window.ENV.API_BASE_URL.replace(/\/+$/, '');
+    }
+    return '';
+  })();
+
+  function getApiUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const cleanPath = path.startsWith('/') ? path : '/' + path;
+    return API_BASE_URL ? (API_BASE_URL + cleanPath) : cleanPath;
+  }
+
+  function getAuthHeaders(extraHeaders) {
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {});
+    try {
+      const token = localStorage.getItem('crm_token');
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+    } catch(e) {}
+    return headers;
+  }
+
+  function fetchApiJson(path, options) {
+    const url = getApiUrl(path);
+    return fetch(url, options).then(function(resp) {
+      return resp.text().then(function(rawText) {
+        let data = null;
+        let isHtml = false;
+        try {
+          data = JSON.parse(rawText);
+        } catch(e) {
+          isHtml = true;
+        }
+        if (isHtml) {
+          const altPath = path.endsWith('.php')
+            ? path.slice(0, -4)
+            : (path.endsWith('/') ? path.slice(0, -1) + '.php' : path + '.php');
+          if (altPath !== path) {
+            return fetch(getApiUrl(altPath), options).then(function(r2) {
+              return r2.text().then(function(t2) {
+                let d2 = null;
+                let h2 = false;
+                try { d2 = JSON.parse(t2); } catch(e) { h2 = true; }
+                return { ok: r2.ok, status: r2.status, data: d2, rawText: t2, isHtml: h2, url: getApiUrl(altPath) };
+              });
+            }).catch(function() {
+              return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
+            });
+          }
+        }
+        return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
+      });
+    });
+  }
+
+  // Auto-redirect if already authenticated
+  fetchApiJson('/api/session.php', {
+    headers: getAuthHeaders(),
+    credentials: 'include'
+  })
+    .then(function(result) {
+      if (result && result.ok && result.data && result.data.authenticated) {
+        window.location.href = result.data.onboardingCompleted ? 'crm.html' : 'onboarding.html';
+      }
+    })
+    .catch(function() {
+      // Session check failed — stay on login page
+    });
+
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const emailError = document.getElementById('emailError');
+  const passwordError = document.getElementById('passwordError');
+  const loginForm = document.getElementById('loginForm');
+  const signInBtn = document.getElementById('signInBtn');
+  const signInSpinner = document.getElementById('signInSpinner');
+  const signInLabel = document.getElementById('signInLabel');
+  const signInArrow = document.getElementById('signInArrow');
+  const loginAlert = document.getElementById('loginAlert');
+  const loginAlertText = document.getElementById('loginAlertText');
+  const toggleEye = document.getElementById('toggleEye');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const forgotBtn = document.getElementById('forgotBtn');
+  const trialBtn = document.getElementById('trialBtn');
+  const toast = document.getElementById('toast');
+
+  const EYE_OPEN = '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
+  const EYE_OFF  = '<path d="M17.94 17.94A10.9 10.9 0 0 1 12 20c-7 0-11-8-11-8a20.6 20.6 0 0 1 5.06-5.94M9.9 4.24A9.7 9.7 0 0 1 12 4c7 0 11 8 11 8a20.6 20.6 0 0 1-3.22 4.44"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/>';
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>toast.classList.remove('show'), 2600);
+  }
+
+  function isValidEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  toggleEye.addEventListener('click', function(){
+    const showing = passwordInput.type === 'text';
+    passwordInput.type = showing ? 'password' : 'text';
+    eyeIcon.innerHTML = showing ? EYE_OPEN : EYE_OFF;
+    toggleEye.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+  });
+
+  emailInput.addEventListener('input', ()=>{
+    emailInput.classList.remove('has-error');
+    emailError.classList.remove('show');
+    loginAlert.classList.remove('show');
+  });
+  passwordInput.addEventListener('input', ()=>{
+    passwordInput.classList.remove('has-error');
+    passwordError.classList.remove('show');
+    loginAlert.classList.remove('show');
+  });
+
+  loginForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    loginAlert.classList.remove('show');
+
+    let valid = true;
+    if(!isValidEmail(emailInput.value.trim())){
+      emailInput.classList.add('has-error');
+      emailError.classList.add('show');
+      valid = false;
+    } else {
+      emailInput.classList.remove('has-error');
+      emailError.classList.remove('show');
+    }
+    if(passwordInput.value.length < 6){
+      passwordInput.classList.add('has-error');
+      passwordError.classList.add('show');
+      valid = false;
+    } else {
+      passwordInput.classList.remove('has-error');
+      passwordError.classList.remove('show');
+    }
+    if(!valid) return;
+
+    // loading state
+    signInBtn.disabled = true;
+    signInSpinner.classList.add('show');
+    signInLabel.textContent = 'Signing in…';
+    signInArrow.style.display = 'none';
+
+    fetchApiJson('/api/login.php', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      credentials: 'include',
+      body: JSON.stringify({
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      })
+    })
+    .then(function(result){
+      signInBtn.disabled = false;
+      signInSpinner.classList.remove('show');
+      signInLabel.textContent = 'Sign in';
+      signInArrow.style.display = '';
+
+      if (result.ok && result.data && result.data.success) {
+        if (result.data.token) {
+          try {
+            localStorage.setItem('crm_token', result.data.token);
+            localStorage.setItem('crm_user_email', emailInput.value.trim().toLowerCase());
+          } catch(e) {}
+        }
+        window.location.href = result.data.redirect || 'crm.html';
+        return;
+      }
+
+      console.error('[Auth Error Detail]', {
+        url: result.url,
+        status: result.status,
+        isHtml: result.isHtml,
+        response: result.data || result.rawText
+      });
+
+      if (result.isHtml || result.status === 404) {
+        loginAlertText.textContent = 'Authentication server unreachable or misconfigured (HTTP ' + result.status + '). Backend returned non-JSON response. Please verify server is running.';
+      } else if (result.status === 401 || result.status === 403) {
+        loginAlertText.textContent = (result.data && result.data.error) || "That email and password combination doesn't match an account.";
+      } else if (result.status >= 500) {
+        loginAlertText.textContent = 'Backend server error (HTTP ' + result.status + '). ' + ((result.data && result.data.error) || 'Please try again later.');
+      } else if (result.data && result.data.error) {
+        loginAlertText.textContent = result.data.error;
+      } else {
+        loginAlertText.textContent = 'Authentication failed (HTTP ' + result.status + '). Please check your credentials.';
+      }
+      loginAlert.classList.add('show');
+    })
+    .catch(function(err){
+      console.error('[Auth Network Error]', err);
+      signInBtn.disabled = false;
+      signInSpinner.classList.remove('show');
+      signInLabel.textContent = 'Sign in';
+      signInArrow.style.display = '';
+      loginAlertText.textContent = 'Network error: Cannot reach server. Please check your connection.';
+      loginAlert.classList.add('show');
+    });
+  });
+
+  forgotBtn.addEventListener('click', function(){
+    const email = emailInput.value.trim();
+    if(!isValidEmail(email)){
+      emailInput.classList.add('has-error');
+      emailError.textContent = 'Enter your email first so we know where to send the reset link.';
+      emailError.classList.add('show');
+      emailInput.focus();
+      return;
+    }
+    emailError.classList.remove('show');
+    showToast('If an account exists for ' + email + ', a reset link is on its way.');
+  });
+
+  trialBtn.addEventListener('click', function(){
+    trialBtn.disabled = true;
+    trialBtn.textContent = 'Setting up your trial…';
+    setTimeout(function(){
+      showToast('Trial account created — taking you to onboarding.');
+      setTimeout(function(){ window.location.href = 'onboarding.html'; }, 700);
+    }, 900);
+  });
+
+  // ---- OTP flow ----
+  const passwordView = document.getElementById('passwordView');
+  const otpView = document.getElementById('otpView');
+  const showOtpBtn = document.getElementById('showOtpBtn');
+  const backToPasswordBtn = document.getElementById('backToPasswordBtn');
+  const phoneInput = document.getElementById('phone');
+  const phoneError = document.getElementById('phoneError');
+  const sendOtpBtn = document.getElementById('sendOtpBtn');
+  const sendOtpSpinner = document.getElementById('sendOtpSpinner');
+  const otpStep1 = document.getElementById('otpStep1');
+  const otpStep2 = document.getElementById('otpStep2');
+  const otpCode = document.getElementById('otpCode');
+  const otpError = document.getElementById('otpError');
+  const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+  const verifyOtpSpinner = document.getElementById('verifyOtpSpinner');
+
+  showOtpBtn.addEventListener('click', function(){
+    passwordView.style.display = 'none';
+    otpView.style.display = 'block';
+  });
+  backToPasswordBtn.addEventListener('click', function(){
+    otpView.style.display = 'none';
+    passwordView.style.display = 'block';
+    otpStep1.style.display = 'block';
+    otpStep2.style.display = 'none';
+    phoneInput.value = '';
+    otpCode.value = '';
+  });
+
+  sendOtpBtn.addEventListener('click', function(){
+    const digits = phoneInput.value.replace(/\D/g,'');
+    if(digits.length !== 10){
+      phoneInput.classList.add('has-error');
+      phoneError.classList.add('show');
+      return;
+    }
+    phoneInput.classList.remove('has-error');
+    phoneError.classList.remove('show');
+
+    sendOtpBtn.disabled = true;
+    sendOtpSpinner.classList.add('show');
+    setTimeout(function(){
+      sendOtpBtn.disabled = false;
+      sendOtpSpinner.classList.remove('show');
+      otpStep1.style.display = 'none';
+      otpStep2.style.display = 'block';
+      showToast('Demo code: 123456');
+    }, 900);
+  });
+
+  verifyOtpBtn.addEventListener('click', function(){
+    if(otpCode.value.trim().length !== 6){
+      otpCode.classList.add('has-error');
+      otpError.classList.add('show');
+      return;
+    }
+    otpCode.classList.remove('has-error');
+    otpError.classList.remove('show');
+
+    verifyOtpBtn.disabled = true;
+    verifyOtpSpinner.classList.add('show');
+    setTimeout(function(){
+      verifyOtpBtn.disabled = false;
+      verifyOtpSpinner.classList.remove('show');
+      if(otpCode.value.trim() === '123456'){
+        showToast('Verified — taking you to your dashboard.');
+        setTimeout(function(){ window.location.href = '/crm'; }, 600);
+      } else {
+        otpCode.classList.add('has-error');
+        otpError.textContent = 'That code is incorrect.';
+        otpError.classList.add('show');
+      }
+    }, 900);
+  });
+
+  // ---- Demo role cards ----
+  document.querySelectorAll('.demo-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      const role = card.getAttribute('data-role');
+      let email = 'admin@loanpilot.com';
+      if (role.toLowerCase().includes('sales')) email = 'sales@loanpilot.com';
+      else if (role.toLowerCase().includes('ops') || role.toLowerCase().includes('operation')) email = 'ops@loanpilot.com';
+      else if (role.toLowerCase().includes('finance')) email = 'finance@loanpilot.com';
+
+      emailInput.value = email;
+      passwordInput.value = 'demo@12345';
+
+      card.classList.add('loading');
+      const roleLabel = card.querySelector('.demo-role');
+      const origText = roleLabel ? roleLabel.textContent : role;
+      if (roleLabel) roleLabel.textContent = 'Signing in…';
+
+      fetch(getApiUrl('/api/login'), {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ email: email, password: 'demo@12345' })
+      })
+      .then(function(res){ return res.json().catch(function(){ return { success: false }; }); })
+      .then(function(d){
+        card.classList.remove('loading');
+        if (roleLabel) roleLabel.textContent = origText;
+        if (d && d.success) {
+          if (d.token) {
+            try {
+              localStorage.setItem('crm_token', d.token);
+              localStorage.setItem('crm_user_email', email);
+            } catch(e) {}
+          }
+          showToast('Signed in as ' + role + ' (demo)');
+          setTimeout(function(){ window.location.href = d.redirect || 'crm.html'; }, 600);
+        } else {
+          loginAlertText.textContent = (d && d.error) || "Demo sign-in failed. Backend server may not be running.";
+          loginAlert.classList.add('show');
+        }
+      })
+      .catch(function(){
+        card.classList.remove('loading');
+        if (roleLabel) roleLabel.textContent = origText;
+        loginAlertText.textContent = 'Cannot reach the server. Please check connection.';
+        loginAlert.classList.add('show');
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

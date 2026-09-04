@@ -26,6 +26,12 @@ $filesToInclude = @(
     @{ Path = "$baseDir\api\session.php"; Entry = "api/session.php" },
     @{ Path = "$baseDir\api\logout.php"; Entry = "api/logout.php" },
     @{ Path = "$baseDir\api\crms.php"; Entry = "api/crms.php" },
+    @{ Path = "$baseDir\crm\index.php"; Entry = "crm/index.php" },
+    @{ Path = "$baseDir\crm\index.html"; Entry = "crm/index.html" },
+    @{ Path = "$baseDir\login\index.php"; Entry = "login/index.php" },
+    @{ Path = "$baseDir\login\index.html"; Entry = "login/index.html" },
+    @{ Path = "$baseDir\onboarding\index.php"; Entry = "onboarding/index.php" },
+    @{ Path = "$baseDir\onboarding\index.html"; Entry = "onboarding/index.html" },
     @{ Path = "$baseDir\data\users.json"; Entry = "data/users.json" },
     @{ Path = "$baseDir\data\sessions.json"; Entry = "data/sessions.json" },
     @{ Path = "$baseDir\data\crm_db.json"; Entry = "data/crm_db.json" }

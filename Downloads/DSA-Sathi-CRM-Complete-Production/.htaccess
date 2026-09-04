@@ -1,6 +1,7 @@
 # DSA Sathi CRM — Production Apache / Hostinger / cPanel Configuration
-DirectoryIndex index.html login.html
+DirectoryIndex index.html index.php login.html
 
+Options -MultiViews
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -8,10 +9,8 @@ DirectoryIndex index.html login.html
   # 1. Block direct access to sensitive backend files and data
   RewriteRule ^(\.env|\.git|data/|.*\.json$) - [F,L]
 
-  # 2. If physical file exists, serve it directly (e.g. api/login.php, static assets)
-  RewriteCond %{REQUEST_FILENAME} -f
-  RewriteRule ^ - [L]
-
+  # 2. If physical file or directory exists, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
@@ -19,32 +18,21 @@ DirectoryIndex index.html login.html
   RewriteRule ^api$ api/index.php [QSA,L]
   RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 
-  # 4. Explicit HTML Page Route Mappings (GET requests only)
-  RewriteCond %{REQUEST_METHOD} GET
-  RewriteRule ^login/?$ login.html [L,QSA]
-  RewriteCond %{REQUEST_METHOD} GET
+  # 4. Route clean URLs to physical HTML files
   RewriteRule ^crm/?$ crm.html [L,QSA]
-  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^crm/.*$ crm.html [L,QSA]
+  RewriteRule ^login/?$ login.html [L,QSA]
   RewriteRule ^onboarding/?$ onboarding.html [L,QSA]
-  RewriteCond %{REQUEST_METHOD} GET
-  RewriteRule ^index/?$ index.html [L,QSA]
 
-  # 5. SPA Route Fallbacks for CRM Dashboard & Sub-modules (GET requests only)
-  RewriteCond %{REQUEST_METHOD} GET
-  RewriteRule ^crm/.* crm.html [L,QSA]
-  RewriteCond %{REQUEST_METHOD} GET
+  # 5. SPA Route Fallbacks for CRM Dashboard sub-modules
   RewriteRule ^(dashboard|overview|ask-ai|setup|team|reports|finance|hr|marketing|wallet|calculators|verifications|utility)/?$ crm.html [L,QSA]
 
-  # 6. Default root and fallback routing (GET requests only - NEVER rewrite API or non-GET)
-  RewriteRule ^$ index.html [L,QSA]
-  RewriteCond %{REQUEST_METHOD} GET
-  RewriteCond %{REQUEST_URI} !^/api/
-  RewriteCond %{REQUEST_URI} !^/api$
+  # 6. Fallback only non-API requests to index.html
+  RewriteCond %{REQUEST_URI} !^/api
   RewriteRule ^.*$ index.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
-  # Prevent browser caching of HTML, HTM, and PHP so users always see the latest build
   <FilesMatch "\.(html|htm|php)$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
     Header set Pragma "no-cache"

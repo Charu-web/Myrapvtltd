@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Sathi — Workspace Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- FOUC Prevention: apply theme before paint -->
+<script>try{var _t=localStorage.getItem('crm_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<script src="/config.js"></script>
+<script src="/theme.js"></script>
+<style>
+  :root{
+    --navy-900:#0b1d3a;
+    --navy-800:#123163;
+    --blue-700:#1f4fd6;
+    --blue-600:#2f62ee;
+    --blue-500:#5b82f5;
+    --blue-100:#e7edfd;
+    --blue-50:#f0f4fe;
+    --green-600:#1f9d55;
+    --green-100:#e4f6ea;
+    --green-700:#13733d;
+    --amber:#f5a524;
+    --amber-100:#fdf1dd;
+    --amber-800:#a5680c;
+    --purple-600:#7c3aed;
+    --purple-100:#f3e8ff;
+    --ink:#0f1a30;
+    --slate-700:#3d4759;
+    --slate-600:#5b6472;
+    --slate-400:#8992a1;
+    --slate-300:#c3c9d3;
+    --line:#e3e7ee;
+    --paper:#ffffff;
+    --bg:#f5f7fb;
+    --danger:#d64545;
+    --danger-100:#fde8e8;
+    --radius-lg:16px;
+    --radius-md:12px;
+    --radius-sm:9px;
+    --transition:all 0.18s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  [data-theme="dark"]{
+    --paper:#161b22;
+    --ink:#e6edf3;
+    --slate-700:#c9d1d9;
+    --slate-600:#8b949e;
+    --slate-400:#6e7681;
+    --slate-300:#30363d;
+    --line:#30363d;
+    --bg:#0d1117;
+    --blue-100:#162040;
+    --blue-50:#0e1628;
+    --green-100:#0d2318;
+    --amber-100:#251a06;
+    --danger:#f87171;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;min-height:100%;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    transition:background-color 0.2s ease, color 0.2s ease;
+  }
+  h1,h2,h3,.brand-word,.step-title{font-family:'Sora',system-ui,sans-serif;}
+  button,input,select,textarea{font-family:inherit;}
+
+  /* Top bar */
+  .onboarding-topbar{
+    height:64px;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:18px;
+    font-weight:800;
+    text-decoration:none;
+    color:var(--ink);
+  }
+  .brand-icon{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--blue-600),var(--blue-700));
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:14px;
+    box-shadow:0 2px 8px rgba(31,79,214,0.3);
+  }
+
+  /* Stepper Progress Bar */
+  .stepper-wrap{
+    max-width:960px;
+    margin:28px auto 0;
+    padding:0 20px;
+  }
+  .stepper{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+  }
+  .step-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    position:relative;
+    z-index:2;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+  }
+  .step-num{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:var(--paper);
+    border:2px solid var(--line);
+    color:var(--slate-400);
+    font-size:13px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:var(--transition);
+  }
+  .step-item.active .step-num{
+    background:var(--blue-600);
+    border-color:var(--blue-600);
+    color:#fff;
+    box-shadow:0 4px 12px rgba(47,98,238,0.35);
+  }
+  .step-item.done .step-num{
+    background:var(--green-600);
+    border-color:var(--green-600);
+    color:#fff;
+  }
+  .step-label{
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--slate-400);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    transition:var(--transition);
+  }
+  .step-item.active .step-label,.step-item.done .step-label{
+    color:var(--ink);
+  }
+  .progress-line-track{
+    position:absolute;
+    top:19px;
+    left:40px;
+    right:40px;
+    height:3px;
+    background:var(--line);
+    z-index:1;
+  }
+  .progress-line-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--blue-600),var(--green-600));
+    width:0%;
+    transition:width 0.3s ease;
+  }
+
+  /* Wizard Content Area */
+  .wizard-container{
+    max-width:760px;
+    margin:28px auto 60px;
+    padding:0 20px;
+  }
+  .wizard-card{
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-lg);
+    padding:36px;
+    box-shadow:0 12px 32px rgba(15,26,48,0.06);
+  }
+  .wizard-head{
+    margin-bottom:28px;
+  }
+  .step-eyebrow{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--blue-600);
+    margin-bottom:4px;
+  }
+  .step-title{
+    font-size:24px;
+    font-weight:800;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .step-desc{
+    font-size:13.5px;
+    color:var(--slate-600);
+    margin:0;
+    line-height:1.5;
+  }
+
+  /* Form Elements */
+  .form-group{margin-bottom:18px;display:flex;flex-direction:column;gap:6px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:580px){.form-grid{grid-template-columns:1fr;}}
+  .form-label{font-size:12px;font-weight:700;color:var(--slate-600);text-transform:uppercase;letter-spacing:0.05em;}
+  .form-input,.form-select,.form-textarea{
+    width:100%;
+    height:44px;
+    padding:0 14px;
+    font-size:13.5px;
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-sm);
+    background:var(--paper);
+    color:var(--ink);
+    outline:none;
+    transition:var(--transition);
+  }
+  .form-textarea{height:90px;padding:10px 14px;resize:vertical;}
+  .form-input:focus,.form-select:focus,.form-textarea:focus{
+    border-color:var(--blue-600);
+    box-shadow:0 0 0 3px rgba(47,98,238,0.15);
+  }
+  .form-input.has-error,.form-select.has-error{border-color:var(--danger);}
+  .form-error-text{font-size:11.5px;color:var(--danger);display:none;margin-top:2px;}
+  .form-error-text.show{display:block;}
+
+  /* Module selector cards */
+  .modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+  .module-select-card{
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    transition:var(--transition);
+    background:var(--paper);
+  }
+  .module-select-card:hover{border-color:var(--blue-500);}
+  .module-select-card.selected{border-color:var(--blue-600);background:var(--blue-50);}
+  [data-theme="dark"] .module-select-card.selected{background:#162040;}
+  .module-icon{font-size:22px;flex-shrink:0;}
+  .module-title{font-size:13.5px;font-weight:700;color:var(--ink);margin:0 0 2px;}
+  .module-desc{font-size:11.5px;color:var(--slate-600);margin:0;line-height:1.3;}
+
+  /* Action Footers */
+  .wizard-foot{
+    margin-top:32px;
+    padding-top:20px;
+    border-top:1.5px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .btn{
+    height:42px;
+    padding:0 22px;
+    border-radius:var(--radius-sm);
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:1.5px solid transparent;
+    transition:var(--transition);
+  }
+  .btn-primary{
+    background:linear-gradient(180deg,var(--blue-600),var(--blue-700));
+    color:#fff;
+    border-color:var(--blue-700);
+    box-shadow:0 2px 8px rgba(31,79,214,0.3);
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-secondary{background:var(--paper);border-color:var(--line);color:var(--slate-700);}
+  .btn-secondary:hover{background:var(--bg);}
+
+  /* Toast Notification */
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;
+    padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;
+    opacity:0;pointer-events:none;transition:var(--transition);z-index:1000;
+  }
+  .toast.show{opacity:1;pointer-events:auto;}
+</style>
+</head>
+<body>
+
+<div class="onboarding-topbar">
+  <a href="/" class="brand">
+    <div class="brand-icon">DS</div>
+    <span class="brand-word">DSA Sathi</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="theme-toggle-btn" data-theme-toggle title="Switch theme" style="width:36px;height:36px;border-radius:9px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;">🌙</button>
+    <span style="font-size:13px;color:var(--slate-600);" id="userEmailTag">Loading...</span>
+  </div>
+</div>
+
+<div class="stepper-wrap">
+  <div class="stepper">
+    <div class="progress-line-track"><div class="progress-line-fill" id="progressFill"></div></div>
+    <button class="step-item active" data-step-nav="1">
+      <div class="step-num">1</div>
+      <div class="step-label">Welcome</div>
+    </button>
+    <button class="step-item" data-step-nav="2">
+      <div class="step-num">2</div>
+      <div class="step-label">Business</div>
+    </button>
+    <button class="step-item" data-step-nav="3">
+      <div class="step-num">3</div>
+      <div class="step-label">CRM Setup</div>
+    </button>
+    <button class="step-item" data-step-nav="4">
+      <div class="step-num">4</div>
+      <div class="step-label">Team</div>
+    </button>
+    <button class="step-item" data-step-nav="5">
+      <div class="step-num">5</div>
+      <div class="step-label">Modules</div>
+    </button>
+    <button class="step-item" data-step-nav="6">
+      <div class="step-num">6</div>
+      <div class="step-label">Finish</div>
+    </button>
+  </div>
+</div>
+
+<div class="wizard-container">
+  <div class="wizard-card" id="wizardCardHost">
+    <!-- Step HTML rendered dynamically by JS -->
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  const state = {
+    currentStep: 1,
+    completedSteps: {},
+    session: null,
+    crmId: null,
+    businessName: '',
+    businessType: 'Sole Proprietorship',
+    industry: 'Loan DSA & Financial Services',
+    phone: '',
+    email: '',
+    website: '',
+    address: '',
+    crmName: '',
+    crmType: 'Loan DSA CRM',
+    currency: '₹ INR',
+    timezone: 'Asia/Kolkata (+05:30)',
+    primaryColor: '#1f4fd6',
+    teamMembers: [],
+    enabledModules: ['leads', 'loans', 'banks', 'partners', 'contacts', 'customers', 'companies', 'deals', 'tasks', 'reports']
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = '✓ ' + msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  const API_BASE_URL = (function() {
+    if (typeof window !== 'undefined') {
+      if (window.API_BASE_URL) return window.API_BASE_URL.replace(/\/+$/, '');
+      if (window.ENV && window.ENV.API_BASE_URL) return window.ENV.API_BASE_URL.replace(/\/+$/, '');
+    }
+    return '';
+  })();
+
+  function getApiUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const cleanPath = path.startsWith('/') ? path : '/' + path;
+    return API_BASE_URL ? (API_BASE_URL + cleanPath) : cleanPath;
+  }
+
+  function getAuthHeaders(extraHeaders) {
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {});
+    try {
+      const token = localStorage.getItem('crm_token');
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+    } catch(e) {}
+    return headers;
+  }
+
+  async function api(path, options = {}) {
+    let url = getApiUrl(path);
+    const headers = getAuthHeaders(options.headers || {});
+    let res = await fetch(url, {
+      ...options,
+      headers: headers,
+      credentials: 'include'
+    });
+    let rawText = await res.text().catch(() => '');
+    let data = null;
+    try {
+      data = JSON.parse(rawText);
+    } catch (e) {
+      if (!path.includes('.php')) {
+        const phpPath = path.split('?')[0] + '.php' + (path.includes('?') ? '?' + path.split('?')[1] : '');
+        const phpRes = await fetch(getApiUrl(phpPath), {
+          ...options,
+          headers: headers,
+          credentials: 'include'
+        }).catch(() => null);
+        if (phpRes) {
+          const phpText = await phpRes.text().catch(() => '');
+          try {
+            data = JSON.parse(phpText);
+            res = phpRes;
+          } catch (e) {}
+        }
+      }
+    }
+    if (!res || !res.ok) {
+      const err = new Error((data && data.error) || 'API error ' + (res ? res.status : 'network'));
+      err.status = res ? res.status : 0;
+      err.data = data;
+      throw err;
+    }
+    return data;
+  }
+
+  async function init() {
+    try {
+      const sess = await api('/api/session');
+      if (!sess || !sess.authenticated) {
+        window.location.href = 'login.html';
+        return;
+      }
+      state.session = sess;
+      document.getElementById('userEmailTag').textContent = sess.email;
+      state.email = sess.email;
+
+      let onbData = null;
+      try { onbData = await api('/api/onboarding'); } catch(e){}
+
+      if (onbData && onbData.progress) {
+        const p = onbData.progress;
+        state.completedSteps = p.completedSteps || {};
+        state.businessName = p.businessName || `${sess.name || 'My'} Agency`;
+        state.phone = p.phone || '';
+        state.crmName = p.crmName || `${sess.name || 'My'} CRM`;
+        if (p.onboarding_completed) {
+          window.location.href = 'crm.html';
+          return;
+        }
+      }
+
+      renderWizard();
+    } catch (err) {
+      console.error('Onboarding init error:', err);
+      renderWizard();
+    }
+  }
+
+  function renderWizard() {
+    const fill = document.getElementById('progressFill');
+    fill.style.width = `${((state.currentStep - 1) / 5) * 100}%`;
+
+    document.querySelectorAll('.step-item').forEach((item, idx) => {
+      const stepNum = idx + 1;
+      item.classList.toggle('active', stepNum === state.currentStep);
+      item.classList.toggle('done', !!state.completedSteps[stepNum]);
+      item.onclick = () => {
+        if (state.completedSteps[stepNum] || stepNum <= state.currentStep) {
+          state.currentStep = stepNum;
+          renderWizard();
+        }
+      };
+    });
+
+    const host = document.getElementById('wizardCardHost');
+    switch(state.currentStep) {
+      case 1: renderStep1(host); break;
+      case 2: renderStep2(host); break;
+      case 3: renderStep3(host); break;
+      case 4: renderStep4(host); break;
+      case 5: renderStep5(host); break;
+      case 6: renderStep6(host); break;
+    }
+  }
+
+  // STEP 1: Welcome
+  function renderStep1(host) {
+    host.innerHTML = `
+      <div class="wizard-head">
+        <div class="step-eyebrow">Step 01 / 06</div>
+        <h2 class="step-title">Welcome to DSA Sathi</h2>
+        <p class="step-desc">Setup your multi-tenant CRM workspace to streamline loan leads, bank payouts, and team operations.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0;">
+        <div style="padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--line);">
+          <div style="font-size:24px;margin-bottom:6px;">📑</div>
+          <strong style="font-size:13.5px;">Multi-Bank Tracker</strong>
+          <p style="font-size:12px;color:var(--slate-600);margin:4px 0 0;">800+ Banks & NBFC commission slabs.</p>
+        </div>
+        <div style="padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--line);">
+          <div style="font-size:24px;margin-bottom:6px;">👥</div>
+          <strong style="font-size:13.5px;">Leads &amp; Applications</strong>
+          <p style="font-size:12px;color:var(--slate-600);margin:4px 0 0;">Full lead-to-disbursal workflow.</p>
+        </div>
+        <div style="padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--line);">
+          <div style="font-size:24px;margin-bottom:6px;">🤝</div>
+          <strong style="font-size:13.5px;">Sub-DSA Network</strong>
+          <p style="font-size:12px;color:var(--slate-600);margin:4px 0 0;">Manage connector payouts &amp; TDS.</p>
+        </div>
+      </div>
+
+      <div class="wizard-foot" style="justify-content:flex-end;">
+        <button class="btn btn-primary" id="btnStep1Next">Get Started →</button>
+      </div>`;
+
+    document.getElementById('btnStep1Next').onclick = async () => {
+      state.completedSteps[1] = true;
+      await saveProgress();
+      state.currentStep = 2;
+      renderWizard();
+    };
+  }
+
+  // STEP 2: Business Info
+  function renderStep2(host) {
+    host.innerHTML = `
+      <div class="wizard-head">
+        <div class="step-eyebrow">Step 02 / 06</div>
+        <h2 class="step-title">Business &amp; Company Details</h2>
+        <p class="step-desc">Enter your agency or company information for client invoices and branding.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Business / Company Name *</label>
+          <input type="text" class="form-input" id="onbBizName" value="${state.businessName}" placeholder="e.g. Empire Credit First" required>
+          <span class="form-error-text" id="errBizName">Business Name is required.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business Type</label>
+          <select class="form-select" id="onbBizType">
+            <option value="Sole Proprietorship" ${state.businessType==='Sole Proprietorship'?'selected':''}>Sole Proprietorship</option>
+            <option value="Partnership" ${state.businessType==='Partnership'?'selected':''}>Partnership Firm</option>
+            <option value="Private Limited" ${state.businessType==='Private Limited'?'selected':''}>Private Limited (Pvt Ltd)</option>
+            <option value="LLP" ${state.businessType==='LLP'?'selected':''}>LLP</option>
+            <option value="Individual Agent" ${state.businessType==='Individual Agent'?'selected':''}>Individual DSA Agent</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input type="text" class="form-input" id="onbPhone" value="${state.phone}" placeholder="+91 98765 43210" required>
+          <span class="form-error-text" id="errPhone">Valid phone number is required.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-input" id="onbEmail" value="${state.email}" placeholder="contact@agency.com" required>
+          <span class="form-error-text" id="errEmail">Valid email is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Website URL (Optional)</label>
+        <input type="text" class="form-input" id="onbWeb" value="${state.website}" placeholder="https://example.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Business Address</label>
+        <textarea class="form-textarea" id="onbAddr" placeholder="123 Financial Hub, Commercial Complex...">${state.address}</textarea>
+      </div>
+
+      <div class="wizard-foot">
+        <button class="btn btn-secondary" id="btnStep2Back">← Back</button>
+        <button class="btn btn-primary" id="btnStep2Next">Continue →</button>
+      </div>`;
+
+    document.getElementById('btnStep2Back').onclick = () => { state.currentStep = 1; renderWizard(); };
+    document.getElementById('btnStep2Next').onclick = async () => {
+      const bizName = document.getElementById('onbBizName').value.trim();
+      const phone = document.getElementById('onbPhone').value.trim();
+      const email = document.getElementById('onbEmail').value.trim();
+
+      let valid = true;
+      if (!bizName) { document.getElementById('errBizName').classList.add('show'); valid = false; }
+      if (!phone) { document.getElementById('errPhone').classList.add('show'); valid = false; }
+      if (!email || !email.includes('@')) { document.getElementById('errEmail').classList.add('show'); valid = false; }
+      if (!valid) return;
+
+      state.businessName = bizName;
+      state.businessType = document.getElementById('onbBizType').value;
+      state.phone = phone;
+      state.email = email;
+      state.website = document.getElementById('onbWeb').value.trim();
+      state.address = document.getElementById('onbAddr').value.trim();
+
+      state.completedSteps[2] = true;
+      await saveProgress();
+      state.currentStep = 3;
+      renderWizard();
+    };
+  }
+
+  // STEP 3: CRM Setup
+  function renderStep3(host) {
+    if (!state.crmName) state.crmName = `${state.businessName || 'My'} CRM`;
+
+    host.innerHTML = `
+      <div class="wizard-head">
+        <div class="step-eyebrow">Step 03 / 06</div>
+        <h2 class="step-title">CRM Workspace &amp; Branding</h2>
+        <p class="step-desc">Configure your workspace defaults, currency, and primary brand colors.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">CRM Workspace Name *</label>
+          <input type="text" class="form-input" id="onbCrmName" value="${state.crmName}" required>
+          <span class="form-error-text" id="errCrmName">CRM Name is required.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">CRM Industry Type</label>
+          <select class="form-select" id="onbCrmType">
+            <option value="Loan DSA CRM">Loan DSA CRM (Recommended)</option>
+            <option value="Sales CRM">Sales CRM</option>
+            <option value="Real Estate CRM">Real Estate CRM</option>
+            <option value="Custom CRM">Custom CRM</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Primary Currency</label>
+          <select class="form-select" id="onbCurrency">
+            <option value="₹ INR" ${state.currency==='₹ INR'?'selected':''}>₹ INR (Indian Rupee)</option>
+            <option value="$ USD" ${state.currency==='$ USD'?'selected':''}>$ USD (US Dollar)</option>
+            <option value="€ EUR" ${state.currency==='€ EUR'?'selected':''}>€ EUR (Euro)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time Zone</label>
+          <select class="form-select" id="onbTimezone">
+            <option value="Asia/Kolkata (+05:30)">Asia/Kolkata (+05:30)</option>
+            <option value="UTC (GMT+0)">UTC (GMT+0)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Primary Brand Color</label>
+        <select class="form-select" id="onbColor">
+          <option value="#1f4fd6" selected>🔵 Royal Blue (#1f4fd6)</option>
+          <option value="#7c3aed">💜 Deep Purple (#7c3aed)</option>
+          <option value="#10b981">🟢 Emerald Green (#10b981)</option>
+          <option value="#f59e0b">🟧 Amber Gold (#f59e0b)</option>
+        </select>
+      </div>
+
+      <div class="wizard-foot">
+        <button class="btn btn-secondary" id="btnStep3Back">← Back</button>
+        <button class="btn btn-primary" id="btnStep3Next">Continue →</button>
+      </div>`;
+
+    document.getElementById('btnStep3Back').onclick = () => { state.currentStep = 2; renderWizard(); };
+    document.getElementById('btnStep3Next').onclick = async () => {
+      const crmName = document.getElementById('onbCrmName').value.trim();
+      if (!crmName) { document.getElementById('errCrmName').classList.add('show'); return; }
+
+      state.crmName = crmName;
+      state.crmType = document.getElementById('onbCrmType').value;
+      state.currency = document.getElementById('onbCurrency').value;
+      state.timezone = document.getElementById('onbTimezone').value;
+      state.primaryColor = document.getElementById('onbColor').value;
+
+      state.completedSteps[3] = true;
+      await saveProgress();
+      state.currentStep = 4;
+      renderWizard();
+    };
+  }
+
+  // STEP 4: Team Setup
+  function renderStep4(host) {
+    const memberRows = state.teamMembers.map((m, idx) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;margin-bottom:8px;">
+        <div><strong>${m.name}</strong> <span style="font-size:12px;color:var(--slate-500);">&bull; ${m.email}</span></div>
+        <div><span class="badge badge-blue" style="font-size:11px;padding:3px 8px;border-radius:4px;background:var(--blue-100);color:var(--blue-700);">${m.role}</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:8px;height:28px;padding:0 8px;" onclick="removeMember(${idx})">✕</button></div>
+      </div>
+    `).join('') || '<p style="font-size:13px;color:var(--slate-400);margin:12px 0;">No team members added yet.</p>';
+
+    host.innerHTML = `
+      <div class="wizard-head">
+        <div class="step-eyebrow">Step 04 / 06</div>
+        <h2 class="step-title">Team Setup &amp; Invites</h2>
+        <p class="step-desc">Invite loan agents, managers, and team members to collaborate.</p>
+      </div>
+
+      <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:18px;margin-bottom:20px;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Member Name</label>
+            <input type="text" class="form-input" id="tmName" placeholder="e.g. Vikram Mehta">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" id="tmEmail" placeholder="vikram@agency.com">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select class="form-select" id="tmRole">
+              <option value="manager">Manager</option>
+              <option value="employee" selected>Employee / Agent</option>
+              <option value="admin">Admin</option>
+              <option value="viewer">Viewer</option>
+            </select>
+          </div>
+          <div class="form-group" style="justify-content:flex-end;">
+            <button class="btn btn-secondary" id="btnAddMember">+ Add Member</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label class="form-label">Invited Members (${state.teamMembers.length})</label>
+        ${memberRows}
+      </div>
+
+      <div class="wizard-foot">
+        <button class="btn btn-secondary" id="btnStep4Back">← Back</button>
+        <div>
+          <button class="btn btn-secondary" id="btnStep4Skip" style="margin-right:8px;">Skip for now</button>
+          <button class="btn btn-primary" id="btnStep4Next">Continue →</button>
+        </div>
+      </div>`;
+
+    window.removeMember = (idx) => {
+      state.teamMembers.splice(idx, 1);
+      renderWizard();
+    };
+
+    document.getElementById('btnAddMember').onclick = () => {
+      const name = document.getElementById('tmName').value.trim();
+      const email = document.getElementById('tmEmail').value.trim();
+      const role = document.getElementById('tmRole').value;
+      if (name && email) {
+        state.teamMembers.push({ name, email, role });
+        showToast(`Added ${name} (${role})`);
+        renderWizard();
+      }
+    };
+
+    document.getElementById('btnStep4Back').onclick = () => { state.currentStep = 3; renderWizard(); };
+    document.getElementById('btnStep4Skip').onclick = async () => {
+      state.completedSteps[4] = true;
+      await saveProgress();
+      state.currentStep = 5;
+      renderWizard();
+    };
+    document.getElementById('btnStep4Next').onclick = async () => {
+      state.completedSteps[4] = true;
+      await saveProgress();
+      state.currentStep = 5;
+      renderWizard();
+    };
+  }
+
+  // STEP 5: CRM Modules
+  function renderStep5(host) {
+    const modules = [
+      { key: 'leads', icon: '👥', title: 'Leads Management', desc: 'Inbound inquiries & lead scoring' },
+      { key: 'loans', icon: '📑', title: 'Loan Applications', desc: 'Multi-bank loan pipeline tracker' },
+      { key: 'banks', icon: '🏛️', title: 'Bank Directory & Codes', desc: '800+ lenders & commission slabs' },
+      { key: 'partners', icon: '🤝', title: 'Sub-DSAs & Partners', desc: 'Sub-DSA payouts & TDS 5%' },
+      { key: 'contacts', icon: '📇', title: 'Contacts & Customers', desc: 'Client database & customer CRM' },
+      { key: 'companies', icon: '🏢', title: 'Companies & Accounts', desc: 'Corporate accounts & entities' },
+      { key: 'deals', icon: '💼', title: 'Deals / Sales Pipeline', desc: 'Kanban pipeline management' },
+      { key: 'tasks', icon: '📋', title: 'Tasks & Reminders', desc: 'Action items & follow-ups' },
+      { key: 'reports', icon: '📊', title: 'Reports & Analytics', desc: 'Performance reports & CSV export' }
+    ];
+
+    const cards = modules.map(m => {
+      const sel = state.enabledModules.includes(m.key);
+      return `
+        <div class="module-select-card ${sel ? 'selected' : ''}" data-mod-key="${m.key}">
+          <div class="module-icon">${m.icon}</div>
+          <div>
+            <div class="module-title">${m.title}</div>
+            <div class="module-desc">${m.desc}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    host.innerHTML = `
+      <div class="wizard-head">
+        <div class="step-eyebrow">Step 05 / 06</div>
+        <h2 class="step-title">Enable CRM Modules</h2>
+        <p class="step-desc">Select the functional CRM modules you want active in your workspace.</p>
+      </div>
+
+      <div class="modules-grid">${cards}</div>
+
+      <div class="wizard-foot">
+        <button class="btn btn-secondary" id="btnStep5Back">← Back</button>
+        <button class="btn btn-primary" id="btnStep5Next">Continue →</button>
+      </div>`;
+
+    document.querySelectorAll('[data-mod-key]').forEach(c => {
+      c.onclick = () => {
+        const k = c.dataset.modKey;
+        if (state.enabledModules.includes(k)) {
+          state.enabledModules = state.enabledModules.filter(x => x !== k);
+        } else {
+          state.enabledModules.push(k);
+        }
+        renderWizard();
+      };
+    });
+
+    document.getElementById('btnStep5Back').onclick = () => { state.currentStep = 4; renderWizard(); };
+    document.getElementById('btnStep5Next').onclick = async () => {
+      state.completedSteps[5] = true;
+      await saveProgress();
+      state.currentStep = 6;
+      renderWizard();
+    };
+  }
+
+  // STEP 6: Summary & Finish
+  function renderStep6(host) {
+    host.innerHTML = `
+      <div class="wizard-head">
+        <div class="step-eyebrow">Step 06 / 06 &bull; Ready to Launch</div>
+        <h2 class="step-title">Setup Complete! 🎉</h2>
+        <p class="step-desc">Review your workspace configuration below and launch your DSA Sathi CRM.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px;">
+        <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:18px;">
+          <div style="font-size:11px;font-weight:700;color:var(--slate-400);text-transform:uppercase;">Business Profile</div>
+          <div style="font-size:15px;font-weight:700;margin-top:6px;">${state.businessName}</div>
+          <div style="font-size:12.5px;color:var(--slate-600);margin-top:4px;">${state.businessType} &bull; ${state.phone}</div>
+        </div>
+        <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:18px;">
+          <div style="font-size:11px;font-weight:700;color:var(--slate-400);text-transform:uppercase;">CRM Workspace</div>
+          <div style="font-size:15px;font-weight:700;margin-top:6px;">${state.crmName}</div>
+          <div style="font-size:12.5px;color:var(--slate-600);margin-top:4px;">${state.currency} &bull; ${state.timezone}</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:18px;margin-bottom:24px;">
+        <div style="font-size:11px;font-weight:700;color:var(--slate-400);text-transform:uppercase;">Active Modules &amp; Team</div>
+        <div style="font-size:13px;margin-top:6px;"><strong>Enabled Modules (${state.enabledModules.length}):</strong> ${state.enabledModules.join(', ')}</div>
+        <div style="font-size:13px;margin-top:4px;"><strong>Team Members Invites:</strong> ${state.teamMembers.length} member(s) added</div>
+      </div>
+
+      <div class="wizard-foot">
+        <button class="btn btn-secondary" id="btnStep6Back">← Back</button>
+        <button class="btn btn-primary" id="btnStep6Finish" style="height:46px;padding:0 28px;font-size:14px;box-shadow:0 4px 14px rgba(31,79,214,0.35);">
+          🚀 Go to Dashboard
+        </button>
+      </div>`;
+
+    document.getElementById('btnStep6Back').onclick = () => { state.currentStep = 5; renderWizard(); };
+    document.getElementById('btnStep6Finish').onclick = async () => {
+      const btn = document.getElementById('btnStep6Finish');
+      btn.disabled = true;
+      btn.textContent = 'Completing Onboarding...';
+
+      try {
+        state.completedSteps[6] = true;
+        await saveProgress(true);
+        showToast('Onboarding complete! Redirecting to dashboard...');
+        setTimeout(() => { window.location.href = '/crm'; }, 800);
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = '🚀 Go to Dashboard';
+        alert('Error completing onboarding: ' + err.message);
+      }
+    };
+  }
+
+  async function saveProgress(completed = false) {
+    try {
+      const payload = {
+        completedSteps: state.completedSteps,
+        currentStep: state.currentStep,
+        businessName: state.businessName,
+        businessType: state.businessType,
+        industry: state.industry,
+        phone: state.phone,
+        email: state.email,
+        website: state.website,
+        address: state.address,
+        crmName: state.crmName,
+        crmType: state.crmType,
+        currency: state.currency,
+        timezone: state.timezone,
+        primaryColor: state.primaryColor,
+        teamMembers: state.teamMembers,
+        enabledModules: state.enabledModules,
+        onboarding_completed: completed
+      };
+      await api('/api/onboarding', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.error('Failed to persist onboarding state:', e);
+    }
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>
