@@ -1,4 +1,4 @@
-# DSA Sathi CRM — Production Apache / Hostinger / cPanel Configuration
+# DSA Sathi CRM — Production Apache / LiteSpeed Configuration
 DirectoryIndex index.html index.php login.html
 
 Options -MultiViews
@@ -6,28 +6,35 @@ Options -MultiViews
   RewriteEngine On
   RewriteBase /
 
-  # 1. Block direct access to sensitive backend files and data
+  # 1. Prevent internal recursion loops immediately
+  RewriteCond %{ENV:REDIRECT_STATUS} 200
+  RewriteRule ^ - [L]
+
+  # 2. Block direct access to sensitive backend files and data
   RewriteRule ^(\.env|\.git|data/|.*\.json$) - [F,L]
 
-  # 2. If physical file or directory exists, serve it directly
+  # 3. Serve physical files and directories directly without rewriting
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # 3. Route /api and /api/* to PHP API gateway (api/index.php)
-  RewriteRule ^api$ api/index.php [QSA,L]
-  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+  # 4. Never rewrite existing .php files inside api/ (ping.php, login.php, session.php, etc.)
+  RewriteRule ^api/.*\.php$ - [L]
 
-  # 4. Route clean URLs to physical HTML files
+  # 5. Route clean /api (no extension) to api/index.php safely (guard against recursion)
+  RewriteCond %{REQUEST_URI} !^/api/index\.php
+  RewriteRule ^api/?$ api/index.php [QSA,L]
+
+  RewriteCond %{REQUEST_URI} !^/api/index\.php
+  RewriteRule ^api/(.+)$ api/index.php?route=$1 [QSA,L]
+
+  # 6. Route clean URLs to physical HTML files
   RewriteRule ^crm/?$ crm.html [L,QSA]
   RewriteRule ^crm/.*$ crm.html [L,QSA]
   RewriteRule ^login/?$ login.html [L,QSA]
   RewriteRule ^onboarding/?$ onboarding.html [L,QSA]
 
-  # 5. SPA Route Fallbacks for CRM Dashboard sub-modules
-  RewriteRule ^(dashboard|overview|ask-ai|setup|team|reports|finance|hr|marketing|wallet|calculators|verifications|utility)/?$ crm.html [L,QSA]
-
-  # 6. Fallback only non-API requests to index.html
+  # 7. Fallback only non-API requests to index.html
   RewriteCond %{REQUEST_URI} !^/api
   RewriteRule ^.*$ index.html [L]
 </IfModule>

@@ -1,0 +1,6 @@
+﻿# DSA Sathi CRM — API Directory Apache Configuration
+# Disable mod_rewrite recursion inside /api/ so physical PHP files are executed directly by LiteSpeed/Apache
+Options -Indexes
+<IfModule mod_rewrite.c>
+  RewriteEngine Off
+</IfModule>

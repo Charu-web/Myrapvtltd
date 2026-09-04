@@ -27,6 +27,7 @@ $filesToInclude = @(
     @{ Path = "$baseDir\api\logout.php"; Entry = "api/logout.php" },
     @{ Path = "$baseDir\api\crms.php"; Entry = "api/crms.php" },
     @{ Path = "$baseDir\api\ping.php"; Entry = "api/ping.php" },
+    @{ Path = "$baseDir\api\.htaccess"; Entry = "api/.htaccess" },
     @{ Path = "$baseDir\crm\index.php"; Entry = "crm/index.php" },
     @{ Path = "$baseDir\crm\index.html"; Entry = "crm/index.html" },
     @{ Path = "$baseDir\login\index.php"; Entry = "login/index.php" },

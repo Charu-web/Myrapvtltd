@@ -120,8 +120,8 @@ function loadSessions($sessionsFile) {
 
 function saveSessions($sessionsFile, $sessions) {
     $dir = dirname($sessionsFile);
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
-    file_put_contents($sessionsFile, json_encode($sessions, JSON_PRETTY_PRINT));
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    @file_put_contents($sessionsFile, json_encode($sessions, JSON_PRETTY_PRINT));
 }
 
 function getRequestSession($sessionsFile) {
@@ -178,8 +178,8 @@ function loadCrmDb($crmDbFile) {
 
 function saveCrmDb($crmDbFile, $data) {
     $dir = dirname($crmDbFile);
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
-    file_put_contents($crmDbFile, json_encode($data, JSON_PRETTY_PRINT));
+    if (!is_dir($dir)) @mkdir($dir, 0755, true);
+    @file_put_contents($crmDbFile, json_encode($data, JSON_PRETTY_PRINT));
 }
 
 // ===========================================================================
