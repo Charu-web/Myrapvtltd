@@ -665,15 +665,43 @@
     return headers;
   }
 
+  function fetchApiJson(path, options) {
+    const url = getApiUrl(path);
+    return fetch(url, options).then(function(resp) {
+      return resp.text().then(function(rawText) {
+        let data = null;
+        let isHtml = false;
+        try {
+          data = JSON.parse(rawText);
+        } catch(e) {
+          isHtml = true;
+        }
+        if (isHtml && !path.includes('.php')) {
+          const phpPath = path.endsWith('/') ? path.slice(0, -1) + '.php' : path + '.php';
+          return fetch(getApiUrl(phpPath), options).then(function(r2) {
+            return r2.text().then(function(t2) {
+              let d2 = null;
+              let h2 = false;
+              try { d2 = JSON.parse(t2); } catch(e) { h2 = true; }
+              return { ok: r2.ok, status: r2.status, data: d2, rawText: t2, isHtml: h2, url: getApiUrl(phpPath) };
+            });
+          }).catch(function() {
+            return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
+          });
+        }
+        return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
+      });
+    });
+  }
+
   // Auto-redirect if already authenticated
-  fetch(getApiUrl('/api/session'), {
+  fetchApiJson('/api/session', {
     headers: getAuthHeaders(),
     credentials: 'include'
   })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d && d.authenticated) {
-        window.location.href = d.onboardingCompleted ? 'crm.html' : 'onboarding.html';
+    .then(function(result) {
+      if (result && result.ok && result.data && result.data.authenticated) {
+        window.location.href = result.data.onboardingCompleted ? 'crm.html' : 'onboarding.html';
       }
     })
     .catch(function() {
@@ -758,8 +786,7 @@
     signInLabel.textContent = 'Signing in…';
     signInArrow.style.display = 'none';
 
-    const loginUrl = getApiUrl('/api/login');
-    fetch(loginUrl, {
+    fetchApiJson('/api/login', {
       method: 'POST',
       headers: getAuthHeaders(),
       credentials: 'include',
@@ -767,18 +794,6 @@
         email: emailInput.value.trim(),
         password: passwordInput.value
       })
-    })
-    .then(function(resp){
-      return resp.text().then(function(rawText){
-        let data = null;
-        let isHtml = false;
-        try {
-          data = JSON.parse(rawText);
-        } catch(e) {
-          isHtml = true;
-        }
-        return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml };
-      });
     })
     .then(function(result){
       signInBtn.disabled = false;
@@ -798,7 +813,7 @@
       }
 
       console.error('[Auth Error Detail]', {
-        url: loginUrl,
+        url: result.url,
         status: result.status,
         isHtml: result.isHtml,
         response: result.data || result.rawText
@@ -818,12 +833,12 @@
       loginAlert.classList.add('show');
     })
     .catch(function(err){
-      console.error('[Auth Network Error]', err, 'URL:', loginUrl);
+      console.error('[Auth Network Error]', err);
       signInBtn.disabled = false;
       signInSpinner.classList.remove('show');
       signInLabel.textContent = 'Sign in';
       signInArrow.style.display = '';
-      loginAlertText.textContent = 'Network error: Cannot reach server at ' + loginUrl + '. Please check connection.';
+      loginAlertText.textContent = 'Network error: Cannot reach server. Please check your connection.';
       loginAlert.classList.add('show');
     });
   });

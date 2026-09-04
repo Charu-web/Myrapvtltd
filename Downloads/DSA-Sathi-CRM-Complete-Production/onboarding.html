@@ -417,17 +417,37 @@
   }
 
   async function api(path, options = {}) {
-    const url = getApiUrl(path);
+    let url = getApiUrl(path);
     const headers = getAuthHeaders(options.headers || {});
-    const res = await fetch(url, {
+    let res = await fetch(url, {
       ...options,
       headers: headers,
       credentials: 'include'
     });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const err = new Error((data && data.error) || 'API error ' + res.status);
-      err.status = res.status;
+    let rawText = await res.text().catch(() => '');
+    let data = null;
+    try {
+      data = JSON.parse(rawText);
+    } catch (e) {
+      if (!path.includes('.php')) {
+        const phpPath = path.split('?')[0] + '.php' + (path.includes('?') ? '?' + path.split('?')[1] : '');
+        const phpRes = await fetch(getApiUrl(phpPath), {
+          ...options,
+          headers: headers,
+          credentials: 'include'
+        }).catch(() => null);
+        if (phpRes) {
+          const phpText = await phpRes.text().catch(() => '');
+          try {
+            data = JSON.parse(phpText);
+            res = phpRes;
+          } catch (e) {}
+        }
+      }
+    }
+    if (!res || !res.ok) {
+      const err = new Error((data && data.error) || 'API error ' + (res ? res.status : 'network'));
+      err.status = res ? res.status : 0;
       err.data = data;
       throw err;
     }
