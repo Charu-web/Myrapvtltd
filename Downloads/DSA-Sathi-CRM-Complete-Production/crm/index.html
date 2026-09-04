@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- FOUC Prevention: apply theme before paint -->
 <script>try{var _t=localStorage.getItem('crm_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
-<script src="/config.js"></script>
 <script src="/theme.js"></script>
 <style>
   /* =====================================================================
@@ -1562,68 +1561,17 @@
     });
   }
 
-  const API_BASE_URL = (function() {
-    if (typeof window !== 'undefined') {
-      if (window.API_BASE_URL) return window.API_BASE_URL.replace(/\/+$/, '');
-      if (window.ENV && window.ENV.API_BASE_URL) return window.ENV.API_BASE_URL.replace(/\/+$/, '');
-    }
-    return '';
-  })();
-
-  function getApiUrl(path) {
-    if (!path) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    const cleanPath = path.startsWith('/') ? path : '/' + path;
-    return API_BASE_URL ? (API_BASE_URL + cleanPath) : cleanPath;
-  }
-
-  function getAuthHeaders(extraHeaders) {
-    const headers = Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {});
-    try {
-      const token = localStorage.getItem('crm_token');
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-    } catch(e) {}
-    return headers;
-  }
-
   // -------------------------------------------------------------------------
   // API HELPER
   // -------------------------------------------------------------------------
   async function api(path, options = {}) {
-    let url = getApiUrl(path);
-    const headers = getAuthHeaders(options.headers || {});
-    let res = await fetch(url, {
+    const res = await fetch(path, {
       ...options,
-      headers: headers,
-      credentials: 'include'
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      credentials: 'same-origin'
     });
-    let rawText = await res.text().catch(() => '');
-    let data = null;
-    try {
-      data = JSON.parse(rawText);
-    } catch (e) {
-      if (!path.includes('.php')) {
-        const phpPath = path.split('?')[0] + '.php' + (path.includes('?') ? '?' + path.split('?')[1] : '');
-        const phpRes = await fetch(getApiUrl(phpPath), {
-          ...options,
-          headers: headers,
-          credentials: 'include'
-        }).catch(() => null);
-        if (phpRes) {
-          const phpText = await phpRes.text().catch(() => '');
-          try {
-            data = JSON.parse(phpText);
-            res = phpRes;
-          } catch (e) {}
-        }
-      }
-    }
-    if (!res || !res.ok) {
-      const err = new Error((data && data.error) || 'API error ' + (res ? res.status : 'network'));
-      err.status = res ? res.status : 0;
-      err.data = data;
-      throw err;
-    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
     return data;
   }
 
@@ -1633,8 +1581,8 @@
   async function init() {
     try {
       const sess = await api('/api/session');
-      if (!sess || !sess.authenticated) {
-        window.location.href = 'login.html';
+      if (!sess.authenticated) {
+        window.location.href = '/login';
         return;
       }
       state.session = sess;
@@ -1656,14 +1604,13 @@
       handleRoute();
     } catch (err) {
       console.error('Init error:', err);
-      if (err && (err.status === 401 || err.status === 403)) {
-        window.location.href = 'login.html';
-        return;
-      }
-      // For other errors (server down, etc.), still try to setup UI
-      setupEvents();
-      window.addEventListener('hashchange', handleRoute);
-      handleRoute();
+      document.getElementById('appContent').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">⚠️</div>
+          <h3>Connection Error</h3>
+          <p>${err.message || 'Could not connect to server. Please refresh.'}</p>
+          <button class="btn btn-primary" onclick="location.reload()" style="margin-top:16px;">Retry</button>
+        </div>`;
     }
   }
 
@@ -1880,9 +1827,7 @@
     }
   };
 
-  window.openAddDealModal = function() {
-    window.location.hash = '#/crm/deals';
-  };
+  // openAddDealModal is defined globally after renderDealsView — exposed on window there
 
   async function renderOverviewView() {
     const appEl = document.getElementById('appContent');
@@ -4350,6 +4295,7 @@
     form._dealMode = true;
     openModal('dynamicRecordModal');
   }
+  window.openAddDealModal = openAddDealModal;
 
   // =========================================================================
   // TASKS VIEW
@@ -5172,7 +5118,7 @@
         const opts = (f.options || []).map(o => `<option value="${o}" ${v===o?'selected':''}>${o}</option>`).join('');
         return `<div class="form-group"><label class="form-label">${f.name}</label><select class="form-select" name="${f.key}">${opts}</select></div>`;
       }
-      return `<div class="form-group"><label class="form-label">${f.name}</label><input type="text" class="form-input" name="${f.key}" value="${v}" ${req}></div>`;
+      return `<div class="form-group"><label class="form-label">${f.name}</label><input type="${f.type === 'date' ? 'date' : (f.type === 'number' ? 'number' : 'text')}" class="form-input" name="${f.key}" value="${v}" ${req}></div>`;
     }).join('')}</div>`;
   }
 
@@ -5314,10 +5260,7 @@
         isDanger: false
       });
       if (confirmed) {
-        api('/logout', { method: 'POST' }).finally(() => {
-          try { localStorage.removeItem('crm_token'); } catch(e){}
-          window.location.href = '/login';
-        });
+        api('/logout', { method: 'POST' }).finally(() => window.location.href = '/login');
       }
     };
 
@@ -5525,6 +5468,8 @@
           showToast(`New ${mod.singularName} added.`, 'success');
         }
         closeModal('dynamicRecordModal');
+        // Clear dashboard cache so Overview re-fetches fresh stats after any record is saved
+        state.dashboard = null;
         handleRoute();
       } catch (err) {
         showToast('Error saving record: ' + err.message, 'error');

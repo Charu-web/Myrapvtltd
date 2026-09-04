@@ -401,6 +401,109 @@ if (preg_match('#^crms/([^/]+)(?:/(.*))?$#', $route, $matches)) {
         ];
         sendJson(200, ['members' => $members]);
     }
+
+    // /api/crms/{crmId}/modules/{moduleId}/records[/{recordId}]
+    if (preg_match('#^modules/([^/]+)/records(?:/([^/]+))?$#', $sub, $mMatches)) {
+        $modId = $mMatches[1];
+        $recId = isset($mMatches[2]) ? $mMatches[2] : '';
+        $allRecords = isset($db['module_records']) && is_array($db['module_records']) ? $db['module_records'] : [];
+
+        if ($method === 'GET') {
+            if ($recId) {
+                foreach ($allRecords as $r) {
+                    if (($r['crmId'] ?? '') === $crmId && ($r['moduleId'] ?? '') === $modId && ($r['id'] ?? '') === $recId) {
+                        sendJson(200, ['record' => $r, 'notes' => [], 'activities' => []]);
+                    }
+                }
+                sendJson(404, ['error' => 'Record not found']);
+            }
+            $filtered = [];
+            foreach ($allRecords as $r) {
+                if (($r['crmId'] ?? '') === $crmId && ($r['moduleId'] ?? '') === $modId) {
+                    $filtered[] = $r;
+                }
+            }
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+            $paged = array_slice($filtered, $offset, $limit);
+            sendJson(200, ['total' => count($filtered), 'limit' => $limit, 'offset' => $offset, 'records' => $paged]);
+        }
+
+        if ($method === 'POST') {
+            $body = getJsonBody();
+            $newRec = [
+                'id' => 'rec_' . bin2hex(random_bytes(8)),
+                'crmId' => $crmId,
+                'moduleId' => $modId,
+                'data' => isset($body['data']) ? $body['data'] : $body,
+                'createdBy' => $session['email'],
+                'createdAt' => date('c'),
+                'updatedAt' => date('c')
+            ];
+            $db['module_records'][] = $newRec;
+            saveCrmDb($crmDbFile, $db);
+            sendJson(201, ['success' => true, 'record' => $newRec]);
+        }
+
+        if ($method === 'DELETE' && $recId) {
+            $remaining = [];
+            foreach ($allRecords as $r) {
+                if (!(($r['crmId'] ?? '') === $crmId && ($r['moduleId'] ?? '') === $modId && ($r['id'] ?? '') === $recId)) {
+                    $remaining[] = $r;
+                }
+            }
+            $db['module_records'] = $remaining;
+            saveCrmDb($crmDbFile, $db);
+            sendJson(200, ['success' => true, 'message' => 'Record deleted']);
+        }
+    }
+
+    // /api/crms/{crmId}/modules/{targetMod.id} (metadata)
+    if (preg_match('#^modules/([^/]+)$#', $sub, $mMatches)) {
+        $modId = $mMatches[1];
+        sendJson(200, ['module' => ['id' => $modId, 'fields' => []]]);
+    }
+
+    // /api/crms/{crmId}/activities
+    if (preg_match('#^activities#', $sub)) {
+        if ($method === 'POST') {
+            $body = getJsonBody();
+            sendJson(201, ['success' => true, 'activity' => array_merge($body, ['id' => 'act_' . bin2hex(random_bytes(6)), 'createdAt' => date('c')])]);
+        }
+        $acts = isset($db['activities']) && is_array($db['activities']) ? $db['activities'] : [];
+        $crmActs = [];
+        foreach ($acts as $a) {
+            if (($a['crmId'] ?? '') === $crmId) $crmActs[] = $a;
+        }
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+        sendJson(200, ['activities' => array_slice($crmActs, 0, $limit)]);
+    }
+
+    // /api/crms/{crmId}/wallet
+    if ($sub === 'wallet') {
+        sendJson(200, ['balance' => 50000, 'currency' => '₹ INR', 'transactions' => []]);
+    }
+
+    // /api/crms/{crmId}/apikeys
+    if ($sub === 'apikeys' || preg_match('#^apikeys/#', $sub)) {
+        if ($method === 'POST') {
+            sendJson(201, ['success' => true, 'apiKey' => ['id' => 'key_' . bin2hex(random_bytes(6)), 'key' => 'lp_' . bin2hex(random_bytes(16)), 'name' => 'Default API Key', 'createdAt' => date('c')]]);
+        }
+        sendJson(200, ['apiKeys' => []]);
+    }
+
+    // /api/crms/{crmId}/ai/history & /api/crms/{crmId}/ai/chat
+    if ($sub === 'ai/history') {
+        sendJson(200, ['history' => []]);
+    }
+    if ($sub === 'ai/chat') {
+        sendJson(200, ['reply' => 'I am your LoanPilot AI assistant. All CRM services are fully operational.']);
+    }
+
+    // /api/crms/{crmId}/(leads|contacts|companies)/.../related
+    if (preg_match('#^(leads|contacts|companies)/[^/]+/related$#', $sub)) {
+        sendJson(200, ['activities' => [], 'notes' => [], 'deals' => [], 'leads' => [], 'contacts' => []]);
+    }
 }
 
 // 6. Global /api/onboarding

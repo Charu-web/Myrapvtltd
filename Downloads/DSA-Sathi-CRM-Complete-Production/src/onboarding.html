@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- FOUC Prevention: apply theme before paint -->
 <script>try{var _t=localStorage.getItem('crm_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
-<script src="/config.js"></script>
 <script src="/theme.js"></script>
 <style>
   :root{
@@ -392,82 +391,57 @@
     setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  const API_BASE_URL = (function() {
-    if (typeof window !== 'undefined') {
-      if (window.API_BASE_URL) return window.API_BASE_URL.replace(/\/+$/, '');
-      if (window.ENV && window.ENV.API_BASE_URL) return window.ENV.API_BASE_URL.replace(/\/+$/, '');
-    }
-    return '';
-  })();
+  function resolveApiUrl(rawPath) {
+    if (!rawPath || typeof rawPath !== 'string') return rawPath;
+    let path = rawPath.trim();
+    if (!path.startsWith('/api/')) return path;
 
-  function getApiUrl(path) {
-    if (!path) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    const cleanPath = path.startsWith('/') ? path : '/' + path;
-    return API_BASE_URL ? (API_BASE_URL + cleanPath) : cleanPath;
-  }
+    const [pathPart, queryPart] = path.split('?');
+    const route = pathPart.replace(/^\/api\//, '');
+    if (route.endsWith('.php')) return path;
 
-  function getAuthHeaders(extraHeaders) {
-    const headers = Object.assign({ 'Content-Type': 'application/json' }, extraHeaders || {});
-    try {
-      const token = localStorage.getItem('crm_token');
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-    } catch(e) {}
-    return headers;
+    if (route === 'session') return '/api/session.php' + (queryPart ? '?' + queryPart : '');
+    if (route === 'crms') return '/api/crms.php' + (queryPart ? '?' + queryPart : '');
+    if (route === 'login') return '/api/login.php' + (queryPart ? '?' + queryPart : '');
+    if (route === 'logout') return '/api/logout.php' + (queryPart ? '?' + queryPart : '');
+    if (route === 'ping') return '/api/ping.php' + (queryPart ? '?' + queryPart : '');
+
+    const combined = route + (queryPart ? '&' + queryPart : '');
+    return '/api/index.php?route=' + combined;
   }
 
   async function api(path, options = {}) {
-    let url = getApiUrl(path);
-    const headers = getAuthHeaders(options.headers || {});
-    let res = await fetch(url, {
+    const finalUrl = resolveApiUrl(path);
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    try {
+      const token = localStorage.getItem('crm_token');
+      if (token && !headers['Authorization']) {
+        headers['Authorization'] = 'Bearer ' + token;
+      }
+    } catch(e) {}
+
+    const res = await fetch(finalUrl, {
       ...options,
-      headers: headers,
+      headers,
       credentials: 'include'
     });
-    let rawText = await res.text().catch(() => '');
-    let data = null;
-    try {
-      data = JSON.parse(rawText);
-    } catch (e) {
-      if (!path.includes('.php')) {
-        const phpPath = path.split('?')[0] + '.php' + (path.includes('?') ? '?' + path.split('?')[1] : '');
-        const phpRes = await fetch(getApiUrl(phpPath), {
-          ...options,
-          headers: headers,
-          credentials: 'include'
-        }).catch(() => null);
-        if (phpRes) {
-          const phpText = await phpRes.text().catch(() => '');
-          try {
-            data = JSON.parse(phpText);
-            res = phpRes;
-          } catch (e) {}
-        }
-      }
-    }
-    if (!res || !res.ok) {
-      const err = new Error((data && data.error) || 'API error ' + (res ? res.status : 'network'));
-      err.status = res ? res.status : 0;
-      err.data = data;
-      throw err;
-    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
     return data;
   }
 
   async function init() {
     try {
       const sess = await api('/api/session');
-      if (!sess || !sess.authenticated) {
-        window.location.href = 'login.html';
+      if (!sess.authenticated) {
+        window.location.href = '/login';
         return;
       }
       state.session = sess;
       document.getElementById('userEmailTag').textContent = sess.email;
       state.email = sess.email;
 
-      let onbData = null;
-      try { onbData = await api('/api/onboarding'); } catch(e){}
-
+      const onbData = await api('/api/onboarding');
       if (onbData && onbData.progress) {
         const p = onbData.progress;
         state.completedSteps = p.completedSteps || {};
@@ -475,7 +449,7 @@
         state.phone = p.phone || '';
         state.crmName = p.crmName || `${sess.name || 'My'} CRM`;
         if (p.onboarding_completed) {
-          window.location.href = 'crm.html';
+          window.location.href = '/crm';
           return;
         }
       }
@@ -483,7 +457,6 @@
       renderWizard();
     } catch (err) {
       console.error('Onboarding init error:', err);
-      renderWizard();
     }
   }
 
