@@ -420,6 +420,16 @@ const server = http.createServer(async (req, res) => {
     return res.end(configContent);
   }
 
+  // GET /login or /api/login or /api/login.php
+  if (method === 'GET' && (pathname === '/login' || pathname === '/api/login')) {
+    return sendJson(res, 200, {
+      status: 'ok',
+      message: 'LoanPilot Authentication API endpoint. Send POST with email and password to authenticate.',
+      endpoint: '/api/login.php',
+      method: 'POST'
+    });
+  }
+
   // POST /login or /api/login
   if (method === 'POST' && (pathname === '/login' || pathname === '/api/login')) {
     let body;

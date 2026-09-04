@@ -196,6 +196,16 @@ if ($method === 'GET' && ($route === '' || $route === 'health' || $route === 'pi
     ]);
 }
 
+// 1. GET /api/login or GET /api/login.php (Method info)
+if ($method === 'GET' && ($route === 'login' || $route === 'login.php')) {
+    sendJson(200, [
+        'status' => 'ok',
+        'message' => 'LoanPilot Authentication API endpoint. Send POST with email and password to authenticate.',
+        'endpoint' => '/api/login.php',
+        'method' => 'POST'
+    ]);
+}
+
 // 1. POST /api/login or POST /api/login.php
 if ($method === 'POST' && ($route === 'login' || $route === '')) {
     $body = getJsonBody();
