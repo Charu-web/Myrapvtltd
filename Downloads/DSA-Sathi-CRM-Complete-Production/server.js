@@ -403,7 +403,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const pathname = decodeURIComponent(parsedUrl.pathname);
+  let pathname = decodeURIComponent(parsedUrl.pathname);
+  if (pathname.endsWith('.php')) {
+    pathname = pathname.slice(0, -4);
+  }
   const method = req.method;
   const query = Object.fromEntries(parsedUrl.searchParams.entries());
 

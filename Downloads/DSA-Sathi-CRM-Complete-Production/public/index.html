@@ -6,11 +6,13 @@
 <title>LoanPilot — Sign in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <!-- FOUC Prevention: apply theme before paint -->
 <script>try{var _t=localStorage.getItem('crm_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
-<script src="/config.js"></script>
-<script src="/theme.js"></script>
+<script src="/config.js?v=2.1"></script>
+<script src="/theme.js?v=2.1"></script>
 <style>
   :root{
     --navy-900:#0b1d3a;
@@ -676,18 +678,22 @@
         } catch(e) {
           isHtml = true;
         }
-        if (isHtml && !path.includes('.php')) {
-          const phpPath = path.endsWith('/') ? path.slice(0, -1) + '.php' : path + '.php';
-          return fetch(getApiUrl(phpPath), options).then(function(r2) {
-            return r2.text().then(function(t2) {
-              let d2 = null;
-              let h2 = false;
-              try { d2 = JSON.parse(t2); } catch(e) { h2 = true; }
-              return { ok: r2.ok, status: r2.status, data: d2, rawText: t2, isHtml: h2, url: getApiUrl(phpPath) };
+        if (isHtml) {
+          const altPath = path.endsWith('.php')
+            ? path.slice(0, -4)
+            : (path.endsWith('/') ? path.slice(0, -1) + '.php' : path + '.php');
+          if (altPath !== path) {
+            return fetch(getApiUrl(altPath), options).then(function(r2) {
+              return r2.text().then(function(t2) {
+                let d2 = null;
+                let h2 = false;
+                try { d2 = JSON.parse(t2); } catch(e) { h2 = true; }
+                return { ok: r2.ok, status: r2.status, data: d2, rawText: t2, isHtml: h2, url: getApiUrl(altPath) };
+              });
+            }).catch(function() {
+              return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
             });
-          }).catch(function() {
-            return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
-          });
+          }
         }
         return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml, url: url };
       });
@@ -695,7 +701,7 @@
   }
 
   // Auto-redirect if already authenticated
-  fetchApiJson('/api/session', {
+  fetchApiJson('/api/session.php', {
     headers: getAuthHeaders(),
     credentials: 'include'
   })
@@ -786,7 +792,7 @@
     signInLabel.textContent = 'Signing in…';
     signInArrow.style.display = 'none';
 
-    fetchApiJson('/api/login', {
+    fetchApiJson('/api/login.php', {
       method: 'POST',
       headers: getAuthHeaders(),
       credentials: 'include',

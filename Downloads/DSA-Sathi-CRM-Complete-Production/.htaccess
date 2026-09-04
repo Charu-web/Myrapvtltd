@@ -1,28 +1,25 @@
 # DSA Sathi CRM — Production Apache / Hostinger / cPanel Configuration
-
 DirectoryIndex index.html login.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Block direct access to sensitive backend files
-  RewriteRule ^(\.env|\.git|users\.json|data/|crm_db\.json) - [F,L]
+  # 1. Block direct access to sensitive backend files and data
+  RewriteRule ^(\.env|\.git|data/|.*\.json$) - [F,L]
 
-  # 2. If requested filename or directory exists, serve it directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  # 2. If physical file exists, serve it directly (e.g. api/login.php, static assets)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # 3. Reverse proxy API endpoints to Node.js backend if mod_proxy is active
-  <IfModule mod_proxy.c>
-    RewriteRule ^api/(.*)$ http://127.0.0.1:3000/api/$1 [P,L]
-  </IfModule>
-
-  # 4. Route /api/ to PHP API handler when direct Apache handles it
+  # 3. Route /api and /api/* to PHP API gateway (api/index.php)
+  RewriteRule ^api$ api/index.php [QSA,L]
   RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 
-  # 5. Explicit HTML Page Route Mappings (GET requests only)
+  # 4. Explicit HTML Page Route Mappings (GET requests only)
   RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^login/?$ login.html [L,QSA]
   RewriteCond %{REQUEST_METHOD} GET
@@ -32,17 +29,28 @@ DirectoryIndex index.html login.html
   RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^index/?$ index.html [L,QSA]
 
-  # 6. SPA Route Fallbacks for CRM Dashboard & Sub-modules (GET requests only)
+  # 5. SPA Route Fallbacks for CRM Dashboard & Sub-modules (GET requests only)
   RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^crm/.* crm.html [L,QSA]
   RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^(dashboard|overview|ask-ai|setup|team|reports|finance|hr|marketing|wallet|calculators|verifications|utility)/?$ crm.html [L,QSA]
 
-  # 7. Default root and fallback routing (GET requests only - NEVER rewrite API or non-GET)
+  # 6. Default root and fallback routing (GET requests only - NEVER rewrite API or non-GET)
   RewriteRule ^$ index.html [L,QSA]
   RewriteCond %{REQUEST_METHOD} GET
   RewriteCond %{REQUEST_URI} !^/api/
+  RewriteCond %{REQUEST_URI} !^/api$
   RewriteRule ^.*$ index.html [L]
 </IfModule>
 
-# Note: CORS headers are managed dynamically by the backend to support credentials safely.
+<IfModule mod_headers.c>
+  # Prevent browser caching of HTML, HTM, and PHP so users always see the latest build
+  <FilesMatch "\.(html|htm|php)$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
