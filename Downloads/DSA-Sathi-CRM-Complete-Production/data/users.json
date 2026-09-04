@@ -255,5 +255,23 @@
     "hash": "035e2b5468e9725653e9010e19dbb7d7c2fbc568e18b8a33585a1b9420ee62d94b8c09c16211dbe4d1635375b1863f98cb93f367e3a7ecb98648a630343b48c6",
     "name": "Stranger User",
     "createdAt": "2026-09-04T13:16:56.229Z"
+  },
+  "stranger_1788528849278@otherdomain.com": {
+    "salt": "8dba58d42c47a927978627e407cb765e",
+    "hash": "b29d38dae65ef50b6163e244d219475118c1f3d45ac8ca9841167d5a1c9ad6bb6a2d9b2ddafc80683a33c6e3c1a9f7f5a3055fbeb7ddeffd3cc3f59f1bab18c7",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T13:34:09.327Z"
+  },
+  "stranger_1788529145643@otherdomain.com": {
+    "salt": "1858cfdeeecf0d79107a5e775d5403bb",
+    "hash": "75df31513163db6aa2439204f4c5a2cdaf29d95f5183b31d6d791525174eb1e95bed136083b4455c69585e0ee77d669d047e3ee9add10d9844c91b71d4f112d7",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T13:39:05.695Z"
+  },
+  "stranger_1788529204257@otherdomain.com": {
+    "salt": "e522437c6bd516efe42abe7d5faec53b",
+    "hash": "61b158c196e83ef3f21145b37342568a67d45a204dcd00b9c4529e06782a6f8be5fea488aabab9cf66d805e25f69951a80a4acf801aaafb37b37eb7b751fa32c",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T13:40:04.306Z"
   }
 }

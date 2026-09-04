@@ -419,62 +419,24 @@
   async function api(path, options = {}) {
     const url = getApiUrl(path);
     const headers = getAuthHeaders(options.headers || {});
-    let res = null, data = null;
-    try {
-      res = await fetch(url, {
-        ...options,
-        headers: headers,
-        credentials: 'include'
-      });
-      data = await res.json().catch(() => ({}));
-    } catch(e) {
-      data = null;
+    const res = await fetch(url, {
+      ...options,
+      headers: headers,
+      credentials: 'include'
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err = new Error((data && data.error) || 'API error ' + res.status);
+      err.status = res.status;
+      err.data = data;
+      throw err;
     }
-
-    if (res && res.ok && data && !data.error) {
-      return data;
-    }
-
-    // Local fallback for onboarding
-    if (path === '/api/session') {
-      const active = localStorage.getItem('crm_session_active') === 'true';
-      const token = localStorage.getItem('crm_token');
-      if (active || token) {
-        return {
-          authenticated: true,
-          email: localStorage.getItem('crm_user_email') || 'csonker04@gmail.com',
-          name: localStorage.getItem('crm_user_name') || 'Charu Sonker',
-          activeCrmId: 'crm_local_default'
-        };
-      }
-      return { authenticated: false };
-    }
-
-    if (path === '/api/onboarding') {
-      return {
-        crmId: 'crm_local_default',
-        progress: { onboarding_completed: false }
-      };
-    }
-
-    return { success: true };
+    return data;
   }
 
   async function init() {
     try {
-      let sess = await api('/api/session');
-      if (!sess || !sess.authenticated) {
-        const active = localStorage.getItem('crm_session_active') === 'true';
-        const token = localStorage.getItem('crm_token');
-        if (active || token) {
-          sess = {
-            authenticated: true,
-            email: localStorage.getItem('crm_user_email') || 'csonker04@gmail.com',
-            name: localStorage.getItem('crm_user_name') || 'Charu Sonker'
-          };
-        }
-      }
-
+      const sess = await api('/api/session');
       if (!sess || !sess.authenticated) {
         window.location.href = 'login.html';
         return;

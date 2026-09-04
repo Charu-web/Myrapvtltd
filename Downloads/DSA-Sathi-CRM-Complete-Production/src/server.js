@@ -121,9 +121,40 @@ function setCorsHeaders(req, res) {
 }
 
 // ---------------------------------------------------------------------------
-// Sessions
+// Sessions (with disk persistence so page refresh/restarts preserve logins)
 // ---------------------------------------------------------------------------
+const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
 const sessions = new Map();
+
+function loadSessions() {
+  if (fs.existsSync(SESSIONS_FILE)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8'));
+      const now = Date.now();
+      for (const [k, v] of Object.entries(data)) {
+        if (v && v.expires > now) {
+          sessions.set(k, v);
+        }
+      }
+    } catch(e) {}
+  }
+}
+
+function saveSessions() {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    const obj = {};
+    const now = Date.now();
+    for (const [k, v] of sessions.entries()) {
+      if (v && v.expires > now) {
+        obj[k] = v;
+      }
+    }
+    fs.writeFileSync(SESSIONS_FILE, JSON.stringify(obj, null, 2), 'utf8');
+  } catch(e) {}
+}
+
+loadSessions();
 
 function createSession(email, name) {
   const token = crypto.randomBytes(32).toString('hex');
@@ -132,19 +163,28 @@ function createSession(email, name) {
     name: name || email.split('@')[0],
     expires: Date.now() + SESSION_TTL_MS
   });
+  saveSessions();
   return token;
 }
 
 function destroySession(token) {
-  if (token) sessions.delete(token);
+  if (token) {
+    sessions.delete(token);
+    saveSessions();
+  }
 }
 
 function getSession(token) {
   if (!token) return null;
-  const session = sessions.get(token);
+  let session = sessions.get(token);
+  if (!session) {
+    loadSessions();
+    session = sessions.get(token);
+  }
   if (!session) return null;
   if (session.expires < Date.now()) {
     sessions.delete(token);
+    saveSessions();
     return null;
   }
   return session;
@@ -152,9 +192,14 @@ function getSession(token) {
 
 setInterval(() => {
   const now = Date.now();
+  let changed = false;
   for (const [token, session] of sessions) {
-    if (session.expires < now) sessions.delete(token);
+    if (session.expires < now) {
+      sessions.delete(token);
+      changed = true;
+    }
   }
+  if (changed) saveSessions();
 }, 60 * 60 * 1000).unref();
 
 function parseCookies(req) {
@@ -174,7 +219,10 @@ function parseCookies(req) {
 function setSessionCookie(req, res, token) {
   const maxAgeSeconds = Math.floor(SESSION_TTL_MS / 1000);
   const proto = req.headers['x-forwarded-proto'] || (req.socket && req.socket.encrypted ? 'https' : 'http');
-  const isHttps = proto === 'https' || process.env.NODE_ENV === 'production';
+  // Only set Secure based on actual HTTPS connection, NOT just NODE_ENV=production
+  // Reason: NODE_ENV=production on HTTP-only host would set Secure on HTTP cookies,
+  // which browsers silently reject — causing session/auth to always fail in production.
+  const isHttps = proto === 'https';
 
   const reqOrigin = req.headers.origin;
   const reqHost = req.headers.host;
@@ -196,7 +244,8 @@ function setSessionCookie(req, res, token) {
 
 function clearSessionCookie(req, res) {
   const proto = req.headers['x-forwarded-proto'] || (req.socket && req.socket.encrypted ? 'https' : 'http');
-  const isHttps = proto === 'https' || process.env.NODE_ENV === 'production';
+  // Only set Secure based on actual HTTPS connection, NOT just NODE_ENV=production
+  const isHttps = proto === 'https';
   const reqOrigin = req.headers.origin;
   const reqHost = req.headers.host;
   let isCrossOrigin = false;
@@ -1122,6 +1171,12 @@ const server = http.createServer(async (req, res) => {
   res.end('Not found');
 });
 
-server.listen(PORT, HOST, () => {
-  console.log(`DSA Sathi Suite & CRM Platform running at http://${HOST}:${PORT}`);
-});
+if (isNaN(Number(PORT))) {
+  server.listen(PORT, () => {
+    console.log(`DSA Sathi Suite & CRM Platform running on socket ${PORT}`);
+  });
+} else {
+  server.listen(Number(PORT), HOST, () => {
+    console.log(`DSA Sathi Suite & CRM Platform running at http://${HOST}:${PORT}`);
+  });
+}

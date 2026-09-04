@@ -1586,149 +1586,25 @@
     return headers;
   }
 
-  function handleLocalFallbackApi(path, options = {}, res = null, data = null) {
-    const method = (options.method || 'GET').toUpperCase();
-    const cleanPath = path.split('?')[0];
-
-    // Session check fallback
-    if (cleanPath === '/api/session') {
-      const active = localStorage.getItem('crm_session_active') === 'true';
-      const token = localStorage.getItem('crm_token');
-      const email = localStorage.getItem('crm_user_email') || 'csonker04@gmail.com';
-      const name = localStorage.getItem('crm_user_name') || 'Charu Sonker';
-
-      if (active || token) {
-        return {
-          authenticated: true,
-          email: email,
-          name: name,
-          activeCrmId: 'crm_local_default',
-          onboardingCompleted: true
-        };
-      }
-      return { authenticated: false };
-    }
-
-    // Logout fallback
-    if (cleanPath === '/logout' || cleanPath === '/api/logout') {
-      try {
-        localStorage.removeItem('crm_token');
-        localStorage.removeItem('crm_session_active');
-      } catch(e) {}
-      return { success: true, redirect: 'login.html' };
-    }
-
-    // CRMs list fallback
-    if (cleanPath === '/api/crms' && method === 'GET') {
-      const savedEmail = localStorage.getItem('crm_user_email') || 'csonker04@gmail.com';
-      const savedName = localStorage.getItem('crm_user_name') || 'Charu Sonker';
-      const defaultCrm = {
-        id: 'crm_local_default',
-        name: 'Empire IT Xpert CRM',
-        companyName: 'Empire IT Xpert Enterprise',
-        industry: 'Technology',
-        currency: '₹ INR',
-        timezone: 'Asia/Kolkata (+05:30)',
-        ownerEmail: savedEmail,
-        ownerName: savedName,
-        role: 'owner'
-      };
-      return { crms: [defaultCrm] };
-    }
-
-    // Create CRM workspace fallback
-    if (cleanPath === '/api/crms' && method === 'POST') {
-      let body = {};
-      try { body = JSON.parse(options.body || '{}'); } catch(e) {}
-      const newCrm = {
-        id: 'crm_' + Math.random().toString(36).substring(2, 10),
-        name: body.name || 'New Workspace',
-        companyName: body.companyName || 'New Company',
-        industry: body.industry || 'Technology',
-        currency: body.currency || '₹ INR',
-        timezone: body.timezone || 'Asia/Kolkata (+05:30)',
-        ownerEmail: localStorage.getItem('crm_user_email') || 'csonker04@gmail.com',
-        ownerName: localStorage.getItem('crm_user_name') || 'Charu Sonker',
-        role: 'owner'
-      };
-      return { success: true, crm: newCrm };
-    }
-
-    // Standard Module & Record Fallbacks
-    if (cleanPath.includes('/modules')) {
-      const stdModules = [
-        { id: 'mod_leads', name: 'Leads', singularName: 'Lead', key: 'leads', icon: 'users', isStandard: true },
-        { id: 'mod_contacts', name: 'Contacts', singularName: 'Contact', key: 'contacts', icon: 'user-check', isStandard: true },
-        { id: 'mod_accounts', name: 'Accounts', singularName: 'Account', key: 'accounts', icon: 'briefcase', isStandard: true },
-        { id: 'mod_deals', name: 'Deals', singularName: 'Deal', key: 'deals', icon: 'dollar-sign', isStandard: true },
-        { id: 'mod_tasks', name: 'Tasks', singularName: 'Task', key: 'tasks', icon: 'check-square', isStandard: true },
-        { id: 'mod_customers', name: 'Customers', singularName: 'Customer', key: 'customers', icon: 'smile', isStandard: true }
-      ];
-
-      if (cleanPath.endsWith('/modules') && method === 'GET') {
-        return { modules: stdModules };
-      }
-
-      if (cleanPath.includes('/records')) {
-        if (method === 'GET') {
-          return { records: [] };
-        }
-        if (method === 'POST' || method === 'PUT') {
-          return { success: true, record: { id: 'rec_' + Date.now() } };
-        }
-        if (method === 'DELETE') {
-          return { success: true };
-        }
-      }
-    }
-
-    // Dashboard metrics fallback
-    if (cleanPath.endsWith('/dashboard')) {
-      return {
-        metrics: {
-          totalLeads: 24,
-          activeDeals: 12,
-          totalDisbursed: 14500000,
-          pendingTasks: 5,
-          activeCustomers: 18
-        }
-      };
-    }
-
-    // Onboarding progress fallback
-    if (cleanPath === '/api/onboarding') {
-      return {
-        crmId: 'crm_local_default',
-        progress: { onboarding_completed: true }
-      };
-    }
-
-    return { success: true };
-  }
-
   // -------------------------------------------------------------------------
   // API HELPER
   // -------------------------------------------------------------------------
   async function api(path, options = {}) {
     const url = getApiUrl(path);
     const headers = getAuthHeaders(options.headers || {});
-    let res = null, data = null;
-    try {
-      res = await fetch(url, {
-        ...options,
-        headers: headers,
-        credentials: 'include'
-      });
-      data = await res.json().catch(() => ({}));
-    } catch (e) {
-      data = null;
+    const res = await fetch(url, {
+      ...options,
+      headers: headers,
+      credentials: 'include'
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err = new Error((data && data.error) || 'API error ' + res.status);
+      err.status = res.status;
+      err.data = data;
+      throw err;
     }
-
-    if (res && res.ok && data && !data.error) {
-      return data;
-    }
-
-    return handleLocalFallbackApi(path, options, res, data);
+    return data;
   }
 
   // -------------------------------------------------------------------------
@@ -1736,21 +1612,7 @@
   // -------------------------------------------------------------------------
   async function init() {
     try {
-      let sess = await api('/api/session');
-      if (!sess || !sess.authenticated) {
-        const active = localStorage.getItem('crm_session_active') === 'true';
-        const token = localStorage.getItem('crm_token');
-        if (active || token) {
-          sess = {
-            authenticated: true,
-            email: localStorage.getItem('crm_user_email') || 'csonker04@gmail.com',
-            name: localStorage.getItem('crm_user_name') || 'Charu Sonker',
-            activeCrmId: 'crm_local_default',
-            onboardingCompleted: true
-          };
-        }
-      }
-
+      const sess = await api('/api/session');
       if (!sess || !sess.authenticated) {
         window.location.href = 'login.html';
         return;
@@ -1774,6 +1636,11 @@
       handleRoute();
     } catch (err) {
       console.error('Init error:', err);
+      if (err && (err.status === 401 || err.status === 403)) {
+        window.location.href = 'login.html';
+        return;
+      }
+      // For other errors (server down, etc.), still try to setup UI
       setupEvents();
       window.addEventListener('hashchange', handleRoute);
       handleRoute();

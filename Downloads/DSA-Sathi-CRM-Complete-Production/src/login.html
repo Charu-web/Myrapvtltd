@@ -665,21 +665,6 @@
     return headers;
   }
 
-  function performLocalLogin(email, password, redirectUrl) {
-    const inputEmail = (email || 'csonker04@gmail.com').trim().toLowerCase();
-    const token = 'local_token_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-    try {
-      localStorage.setItem('crm_token', token);
-      localStorage.setItem('crm_user_email', inputEmail);
-      localStorage.setItem('crm_user_name', inputEmail.split('@')[0]);
-      localStorage.setItem('crm_session_active', 'true');
-    } catch(e) {}
-    showToast('Signed in successfully');
-    setTimeout(function() {
-      window.location.href = redirectUrl || 'crm.html';
-    }, 500);
-  }
-
   // Auto-redirect if already authenticated
   fetch(getApiUrl('/api/session'), {
     headers: getAuthHeaders(),
@@ -689,16 +674,10 @@
     .then(function(d) {
       if (d && d.authenticated) {
         window.location.href = d.onboardingCompleted ? 'crm.html' : 'onboarding.html';
-      } else if (localStorage.getItem('crm_session_active') === 'true') {
-        window.location.href = 'crm.html';
       }
     })
     .catch(function() {
-      try {
-        if (localStorage.getItem('crm_session_active') === 'true' || localStorage.getItem('crm_token')) {
-          window.location.href = 'crm.html';
-        }
-      } catch(e) {}
+      // Session check failed — stay on login page
     });
 
   const emailInput = document.getElementById('email');
@@ -779,7 +758,8 @@
     signInLabel.textContent = 'Signing in…';
     signInArrow.style.display = 'none';
 
-    fetch(getApiUrl('/api/login'), {
+    const loginUrl = getApiUrl('/api/login');
+    fetch(loginUrl, {
       method: 'POST',
       headers: getAuthHeaders(),
       credentials: 'include',
@@ -789,10 +769,15 @@
       })
     })
     .then(function(resp){
-      return resp.json().then(function(data){
-        return { ok: resp.ok, status: resp.status, data: data };
-      }).catch(function(){
-        return { ok: false, status: resp.status, isHtml: true };
+      return resp.text().then(function(rawText){
+        let data = null;
+        let isHtml = false;
+        try {
+          data = JSON.parse(rawText);
+        } catch(e) {
+          isHtml = true;
+        }
+        return { ok: resp.ok, status: resp.status, data: data, rawText: rawText, isHtml: isHtml };
       });
     })
     .then(function(result){
@@ -806,31 +791,40 @@
           try {
             localStorage.setItem('crm_token', result.data.token);
             localStorage.setItem('crm_user_email', emailInput.value.trim().toLowerCase());
-            localStorage.setItem('crm_session_active', 'true');
           } catch(e) {}
         }
         window.location.href = result.data.redirect || 'crm.html';
         return;
       }
 
-      if (result.isHtml || result.status === 404 || result.status >= 500) {
-        performLocalLogin(emailInput.value, passwordInput.value, 'crm.html');
-        return;
+      console.error('[Auth Error Detail]', {
+        url: loginUrl,
+        status: result.status,
+        isHtml: result.isHtml,
+        response: result.data || result.rawText
+      });
+
+      if (result.isHtml || result.status === 404) {
+        loginAlertText.textContent = 'Authentication server unreachable or misconfigured (HTTP ' + result.status + '). Backend returned non-JSON response. Please verify server is running.';
       } else if (result.status === 401 || result.status === 403) {
         loginAlertText.textContent = (result.data && result.data.error) || "That email and password combination doesn't match an account.";
+      } else if (result.status >= 500) {
+        loginAlertText.textContent = 'Backend server error (HTTP ' + result.status + '). ' + ((result.data && result.data.error) || 'Please try again later.');
       } else if (result.data && result.data.error) {
         loginAlertText.textContent = result.data.error;
       } else {
-        loginAlertText.textContent = 'Authentication failed. Please check your credentials.';
+        loginAlertText.textContent = 'Authentication failed (HTTP ' + result.status + '). Please check your credentials.';
       }
       loginAlert.classList.add('show');
     })
     .catch(function(err){
+      console.error('[Auth Network Error]', err, 'URL:', loginUrl);
       signInBtn.disabled = false;
       signInSpinner.classList.remove('show');
       signInLabel.textContent = 'Sign in';
       signInArrow.style.display = '';
-      performLocalLogin(emailInput.value, passwordInput.value, 'crm.html');
+      loginAlertText.textContent = 'Network error: Cannot reach server at ' + loginUrl + '. Please check connection.';
+      loginAlert.classList.add('show');
     });
   });
 
@@ -963,19 +957,20 @@
             try {
               localStorage.setItem('crm_token', d.token);
               localStorage.setItem('crm_user_email', email);
-              localStorage.setItem('crm_session_active', 'true');
             } catch(e) {}
           }
           showToast('Signed in as ' + role + ' (demo)');
           setTimeout(function(){ window.location.href = d.redirect || 'crm.html'; }, 600);
         } else {
-          performLocalLogin(email, 'demo@12345', 'crm.html');
+          loginAlertText.textContent = (d && d.error) || "Demo sign-in failed. Backend server may not be running.";
+          loginAlert.classList.add('show');
         }
       })
       .catch(function(){
         card.classList.remove('loading');
         if (roleLabel) roleLabel.textContent = origText;
-        performLocalLogin(email, 'demo@12345', 'crm.html');
+        loginAlertText.textContent = 'Cannot reach the server. Please check connection.';
+        loginAlert.classList.add('show');
       });
     });
   });
