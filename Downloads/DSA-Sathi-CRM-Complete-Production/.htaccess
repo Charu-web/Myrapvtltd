@@ -9,18 +9,18 @@ DirectoryIndex index.html login.html
   # 1. Block direct access to sensitive backend files
   RewriteRule ^(\.env|\.git|users\.json|data/|crm_db\.json) - [F,L]
 
-  # 2. Reverse proxy API endpoints to Node.js backend if mod_proxy is active
+  # 2. If requested filename or directory exists, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Reverse proxy API endpoints to Node.js backend if mod_proxy is active
   <IfModule mod_proxy.c>
     RewriteRule ^api/(.*)$ http://127.0.0.1:3000/api/$1 [P,L]
   </IfModule>
 
-  # 3. Route /api/ to PHP API handler when direct Apache handles it
+  # 4. Route /api/ to PHP API handler when direct Apache handles it
   RewriteRule ^api/(.*)$ api/index.php [QSA,L]
-
-  # 4. If requested filename or directory exists, serve it directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
 
   # 5. Explicit HTML Page Route Mappings (GET requests only)
   RewriteCond %{REQUEST_METHOD} GET

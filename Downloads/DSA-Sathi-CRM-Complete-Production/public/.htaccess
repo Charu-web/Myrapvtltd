@@ -1,4 +1,4 @@
-# DSA Sathi CRM — Production Apache / Hostinger Configuration
+# DSA Sathi CRM — Production Apache / Hostinger / cPanel Configuration
 
 DirectoryIndex index.html login.html
 
@@ -9,39 +9,40 @@ DirectoryIndex index.html login.html
   # 1. Block direct access to sensitive backend files
   RewriteRule ^(\.env|\.git|users\.json|data/|crm_db\.json) - [F,L]
 
-  # 2. If the requested filename or directory exists, serve it directly
+  # 2. If requested filename or directory exists, serve it directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # 3. Explicit HTML Page Route Mappings
+  # 3. Reverse proxy API endpoints to Node.js backend if mod_proxy is active
+  <IfModule mod_proxy.c>
+    RewriteRule ^api/(.*)$ http://127.0.0.1:3000/api/$1 [P,L]
+  </IfModule>
+
+  # 4. Route /api/ to PHP API handler when direct Apache handles it
+  RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+  # 5. Explicit HTML Page Route Mappings (GET requests only)
+  RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^login/?$ login.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^crm/?$ crm.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^onboarding/?$ onboarding.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^index/?$ index.html [L,QSA]
 
-  # 4. SPA Route Fallbacks for CRM Dashboard & Sub-modules
+  # 6. SPA Route Fallbacks for CRM Dashboard & Sub-modules (GET requests only)
+  RewriteCond %{REQUEST_METHOD} GET
   RewriteRule ^crm/.* crm.html [L,QSA]
-  RewriteRule ^dashboard/?$ crm.html [L,QSA]
-  RewriteRule ^overview/?$ crm.html [L,QSA]
-  RewriteRule ^ask-ai/?$ crm.html [L,QSA]
-  RewriteRule ^setup/?$ crm.html [L,QSA]
-  RewriteRule ^team/?$ crm.html [L,QSA]
-  RewriteRule ^reports/?$ crm.html [L,QSA]
-  RewriteRule ^finance/?$ crm.html [L,QSA]
-  RewriteRule ^hr/?$ crm.html [L,QSA]
-  RewriteRule ^marketing/?$ crm.html [L,QSA]
-  RewriteRule ^wallet/?$ crm.html [L,QSA]
-  RewriteRule ^calculators/?$ crm.html [L,QSA]
-  RewriteRule ^verifications/?$ crm.html [L,QSA]
-  RewriteRule ^utility/?$ crm.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^(dashboard|overview|ask-ai|setup|team|reports|finance|hr|marketing|wallet|calculators|verifications|utility)/?$ crm.html [L,QSA]
 
-  # 5. Default root and fallback routing
+  # 7. Default root and fallback routing (GET requests only - NEVER rewrite API or non-GET)
   RewriteRule ^$ index.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteCond %{REQUEST_URI} !^/api/
   RewriteRule ^.*$ index.html [L]
 </IfModule>
 
-<IfModule mod_headers.c>
-  Header set Access-Control-Allow-Origin "*"
-  Header set Access-Control-Allow-Credentials "true"
-</IfModule>
+# Note: CORS headers are managed dynamically by the backend to support credentials safely.

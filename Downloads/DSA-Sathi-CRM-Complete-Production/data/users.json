@@ -273,5 +273,11 @@
     "hash": "61b158c196e83ef3f21145b37342568a67d45a204dcd00b9c4529e06782a6f8be5fea488aabab9cf66d805e25f69951a80a4acf801aaafb37b37eb7b751fa32c",
     "name": "Stranger User",
     "createdAt": "2026-09-04T13:40:04.306Z"
+  },
+  "stranger_1788529797442@otherdomain.com": {
+    "salt": "15a0436b41330a0d02a14023249643a0",
+    "hash": "11e44421af3a601b67a4a24df1685aee9e244f385adfc0fbf93e2d3049fa198acc58e85da91bfde49cffb7e52b40882ce5ab2c18b3e11fef03cb7ba74029dda4",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T13:49:57.510Z"
   }
 }
