@@ -1,0 +1,259 @@
+{
+  "csonker04@gmail.com": {
+    "salt": "5b4bace5bcdd8216b1c5604462ebbe0f",
+    "hash": "20a3af40869fca088a8ed172a467ea9320762e199ceeba09ae4502876a5c4dc5b73e1bf5281a52335042d1ba89bca104c0838ce3b5a9f2b089cd279c05a883d2",
+    "createdAt": "2026-08-31T11:06:58.736Z"
+  },
+  "stranger@otherdomain.com": {
+    "salt": "09570746af3847c4285751c4e00a67ab",
+    "hash": "a7196644a6917cded7698fa623e25b5333f3c7f1fdaa4df7dfba0aa3c4411c07d7c0208ea36baa4e3a9bddaf16fe8d60a9285e11be3b056b27a16d9bf4a399b0",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T11:55:08.215Z"
+  },
+  "stranger_1788177511226@otherdomain.com": {
+    "salt": "b1d25cd2eea0ea7a80b3e21dafddaad3",
+    "hash": "8f06cfe5fd509d4c418249ea030de24ebc1a3057dd475d479c80b5630c567980b84e9d74758494ffc54f6556ef18d8f92224cf51d1dbf5e9c292dccb9a1441ef",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T11:58:31.279Z"
+  },
+  "stranger_1788177893676@otherdomain.com": {
+    "salt": "5161cf3e5e568eb7b3d61076afd4f660",
+    "hash": "a90fd207c3a84dd0752664b224a3528d938911507bda07cde9cd6a8e3ca0a85b0ca8071f49e6b31b2f906233a7f6677309f987ab9f62572f5157cb71c22a1d0f",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T12:04:53.720Z"
+  },
+  "stranger_1788178289252@otherdomain.com": {
+    "salt": "bfdded34d4944ce2d76bc3aed3b8ac2c",
+    "hash": "cc2f661e56334f8f8935230266f0bfaa59dc7de1b9c58d414cb03cec933deeb1387dd0a8c194748c05cf1f81f4089ba9d51ec8c8b9779793c71107921369e1c1",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T12:11:29.294Z"
+  },
+  "stranger_1788178852860@otherdomain.com": {
+    "salt": "5163127aa50cffcff0d31a307e26f275",
+    "hash": "f476ad151be24df07a2c692726c68d43fe2c9df6248c04691a82b8e5233e48403dec5f543cc3104a346acb051a3365d4d8d25e73e1850a5721522c7418b086f9",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T12:20:52.901Z"
+  },
+  "stranger_1788193807392@otherdomain.com": {
+    "salt": "742ee8b45efd4dbb18b84c7e060c5053",
+    "hash": "c1b16931d097eb49d6082302edcbc0124162d7254256fcb1e80023fc94c0eacfa26479a9c1d19bea2017d05d3a8534c0ec29c7897addf197470ddd273d02cd71",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T16:30:07.449Z"
+  },
+  "stranger_1788194115635@otherdomain.com": {
+    "salt": "236a820bddd8e98ba3c7c99881c3740f",
+    "hash": "c792d5aa056e91b8b912201f22e528879faf38c57fd10a89f722e3e7685c108f2fe8e8badc83a68a225dfc30caf61d56b7251a2e787e4b20ac1b2e608722f02d",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T16:35:15.682Z"
+  },
+  "stranger_1788194355343@otherdomain.com": {
+    "salt": "d6bb1c03b8e7a33061437424cc9caf0b",
+    "hash": "325cc2f63bd697583fdf526db34033ff0c7e4d03474ae263fadffb524c2eca6772b9463ed4cabc95410e1fe2fd50edfd1b818c985f5ee8d92b17c335dd64dbd8",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T16:39:15.392Z"
+  },
+  "stranger_1788195817358@otherdomain.com": {
+    "salt": "d2a772fe5c7e6d0b28ba14b0accec7cf",
+    "hash": "ea954444d45561a4f78c79dae34d7b426b4289bc63a854f426bb8fdb5467f6233e53b8706dacb0f12b21d55115a98e199d742f795aae78168c399f6dd888bc77",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:03:37.401Z"
+  },
+  "stranger_1788196226230@otherdomain.com": {
+    "salt": "f07fb3a283a81bc739529b2a6cb287cc",
+    "hash": "2f8cfe0bebdd5cf49ff1e6765da54192545be573fb48e187cd569d3190ed3c6641b5fdec47e40f52808ff2f41bb54b8dc4e4acf2ee09283ad13ef83ad0ada9b8",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:10:26.281Z"
+  },
+  "stranger_1788196590656@otherdomain.com": {
+    "salt": "4e198d36d57169408323a69af75b80ff",
+    "hash": "bde3cdfcbd25ea919c96c0715ed9167c18b597b2ed45fabc675b7f0cd0cd81d41eb8dc1ec90ad06d87ffc186942dbc121e0cb826f4703353229361c27899520a",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:16:30.695Z"
+  },
+  "onb_1788196607701@example.com": {
+    "salt": "6f902e5cdfee338ebb9b680e6ba3465a",
+    "hash": "53e6fa34997c115c08290773a6346d03f6c9358a82e5d90d91254e030dd82ac151edbf212c80fc36faf4a6c49db71c1c8b3fa8234b3ff44cd41a2408ab4fa7f8",
+    "name": "Test Onboarding User",
+    "createdAt": "2026-08-31T17:16:47.765Z"
+  },
+  "onb_1788196628492@example.com": {
+    "salt": "ba33ebfe8a2bb0d9dcf72211094d0428",
+    "hash": "81aee07cc6ad2ebd548933011dd769aaeb9e16fff72684ffc8b724ba61e6437a5759a47d8bd1a17719e609fb702564c9bc35bb8e90161155ce109ee20b4e450c",
+    "name": "Test Onboarding User",
+    "createdAt": "2026-08-31T17:17:08.561Z"
+  },
+  "stranger_1788196685971@otherdomain.com": {
+    "salt": "0bda6f91ef26d0de9d4cf2e0b92ecc25",
+    "hash": "655f46fc7a57db0d2b3110b5c84d7d15f273ce33945fb496419fb73665d2ae9b0bfb13c9639f9a97ffe9058923e35711a563affe94e18786052be38b437fcd57",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:18:06.042Z"
+  },
+  "onb_1788196691033@example.com": {
+    "salt": "e74f7bcd7cc66fb9277977c4c327e2f0",
+    "hash": "2e0b027eb00a3749e3b3ae27cafc504906dca06c86a733df669d2d6f5da36cf530d9f1ba0474061b3dedc4997e69bb7627f0f1c65437b8328591b319956744b7",
+    "name": "Test Onboarding User",
+    "createdAt": "2026-08-31T17:18:11.087Z"
+  },
+  "stranger_1788197266960@otherdomain.com": {
+    "salt": "3c4191ed29535a7d9a2c3bff32fe50a2",
+    "hash": "f35f27ecfc8116da70690613f54a76ac3b82f4352942e4737f321c0a67d58304ea24ed615d753a032258f05eee018b5429064d6182b52d8c258c6b037c45fc47",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:27:47.013Z"
+  },
+  "dash_verify_1788197298946@test.com": {
+    "salt": "ca14560701a0984dc5d3690000c22439",
+    "hash": "53b39c232edd25b32f3bf4631e255562819d35a39b06500778b951f9bd87b91d42d659f0cf6ce8bb7dca7166595482fbf8898bdc25939ce1c8c60a4d26455185",
+    "name": "Dash Verify User",
+    "createdAt": "2026-08-31T17:28:19.308Z"
+  },
+  "stranger_1788197309422@otherdomain.com": {
+    "salt": "7b8f2d38f780bbbf45d1fbb2e63fdadc",
+    "hash": "45c96eba0edb4c0aed6d8f13aa8c8e2051e04ab704fd3775557864ff0aed5ac3accb1297372ab616208f4f8fd67fb5943ddc8e5f93e4998dc2053a9310dc8493",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:28:29.474Z"
+  },
+  "stranger_1788197623983@otherdomain.com": {
+    "salt": "b2d68ed2d9d0c2e26a8b5423fed8c666",
+    "hash": "b9af46ef733f3921b0edbad4eaeb4ccfcda42c149212a201e2e69ed0aaa5969c981ff279ee2127c99b9b646f39f9859ed7de3647989eea6dff566db9bddc654d",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:33:44.031Z"
+  },
+  "dash_verify_1788197628308@test.com": {
+    "salt": "534e9796e5ac44c18a6a85ca214f527c",
+    "hash": "0d6ea5a4addeccc5c319dea341e4c9b7e8bcd3a21b5192ff100b62379e86fec553c7ae53e1b62a5db71340a29c33841a8df97706b7ccc5b5451b8fb4a0d3d1c8",
+    "name": "Dash Verify User",
+    "createdAt": "2026-08-31T17:33:48.685Z"
+  },
+  "stranger_1788197812823@otherdomain.com": {
+    "salt": "f88e5ff0553dc20bf80d1da4bc834551",
+    "hash": "1f75a1a5f798a3a406aacfba684632bf4823292560a37ce4f30363be9a35c6fb1a063620fe2d809c13f10a12d02d1bbc1acbab459c33dc8a4c0f725b68f332a6",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:36:52.874Z"
+  },
+  "dash_verify_1788197818895@test.com": {
+    "salt": "defa8ad2cfb574f129740945a8c2fe83",
+    "hash": "2565ab1ff11a641d2b151b8005e9827283a7deeeb94a168edb44654b99cd902a443c5386cdba89de5103240a2665641a8a8d5ab88c3f6d2fec8885dbf485e9ff",
+    "name": "Dash Verify User",
+    "createdAt": "2026-08-31T17:36:58.967Z"
+  },
+  "onb_1788197823231@example.com": {
+    "salt": "d8182ac27492b121bd62252c3b36dc73",
+    "hash": "692ab3456c1b11aad896feb297bd7145e37c59fdcf168f8268c8ca8c0860ea020e7eb1b3d0e1d370fdabbffbf7c051e19fb99c53a6930bd5276f9f8996efa4d4",
+    "name": "Test Onboarding User",
+    "createdAt": "2026-08-31T17:37:03.314Z"
+  },
+  "stranger_1788198064138@otherdomain.com": {
+    "salt": "1d19904f5e2b61dd8ea55e10610fb2c7",
+    "hash": "0f05c32c4ed54f004f93605843336f4fab79e105481665e1d30cd3e1f73ef4d78541985e9448de1c8b92b9fc86af0217906c1beabf31a06e901e79a4b95fc008",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T17:41:04.193Z"
+  },
+  "dash_verify_1788198068494@test.com": {
+    "salt": "2db81f8f66828e41a3de955a4dcb4b2d",
+    "hash": "1cdc0fe735efde297ff3005e6c5892a31eefa900278fa55c4eaf6ad9feaa8f26bb638b4fde90bbf79b188c22a0a7a454e759e890b2be7a20f04e9dac5c746f05",
+    "name": "Dash Verify User",
+    "createdAt": "2026-08-31T17:41:08.561Z"
+  },
+  "onb_1788198077101@example.com": {
+    "salt": "8411505bb3c25f06fc0c0547b9c45f06",
+    "hash": "f52a142cf332f80a67c1335a03206f980396b6a64a75e0230fc76a01d196f0fcf73980ac3e36dee9db2ebdd5f7ced23a84fd3b8ef0768f6be333c50c13d3d6ff",
+    "name": "Test Onboarding User",
+    "createdAt": "2026-08-31T17:41:17.175Z"
+  },
+  "stranger_1788200312949@otherdomain.com": {
+    "salt": "a4bfed1bd0705edc80cbf04687717eb2",
+    "hash": "8394d2ef8461a4d9dff509b8cb1de77d1a3a78e9ca00c1eb8345da7b19a9442775e46f6269f530e6acd8846873f4955d66703e3e311cd86f5cb5e00c35b2aaf4",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T18:18:32.987Z"
+  },
+  "stranger_1788200343401@otherdomain.com": {
+    "salt": "417e81b07d6024584a3bc2dbb997182c",
+    "hash": "07e733196c25e2af20a68a81a5c982dcf5a598d9f13063c21aef8a82cd1b9331423e527faef8ecdf8066246928c535711975523ba758fc701adae9e345592e25",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T18:19:03.448Z"
+  },
+  "stranger_1788200825344@otherdomain.com": {
+    "salt": "eb4931a180c128698b9f3b9f2e7866c1",
+    "hash": "7c9c7242699f0c984bdc6f4c805c74326b8ea3c90aae2a26ef67998fbe8d4e95f06956201d02edbd5bfed5f7e6363b2b74430699d3e75f3faa14c808fd68eabf",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T18:27:05.384Z"
+  },
+  "stranger_1788201086395@otherdomain.com": {
+    "salt": "42a765e45347e253a2989bb5f6c06219",
+    "hash": "864040ad3ecfa21a1a00c8c2642de6bfa84e51f797fff9ae6726f725aa3a14dc7ee0558d04038baa1b87534be3f4da561bed74e9d26bcc9a0c0847474530fe44",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T18:31:26.445Z"
+  },
+  "stranger_1788201294108@otherdomain.com": {
+    "salt": "a18449bc290748c0a695360b2d0314c8",
+    "hash": "cfb67b160a3a1d077a31bab20c3d07a0b0c422d7df16c0633fdebfd0acde0a99bf3571c5b8565340ba137b81988f1f547e77eb8494b6e25d090ae47c5d0dfba6",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T18:34:54.164Z"
+  },
+  "stranger_1788201693033@otherdomain.com": {
+    "salt": "ce212e6f7ee2edccef0897f0c7a6b16a",
+    "hash": "7ba5b0be12a06e9a80a03fa396230f56be4fb080ade2071adfbeaf7ea423f6ef29430007deeabec0753b57cd11997f740f7af30c3fce49403e247a2a92203b65",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T18:41:33.084Z"
+  },
+  "stranger_1788203595551@otherdomain.com": {
+    "salt": "b476c2bb9e270b6dbc2dfb5546825691",
+    "hash": "9f21e88bcae4616d0fbcd195ff1a2019c366007553a45a9b2efd64ab29d5ec6ee49bfed1573023aea9d803bf0f4de52e98729ee6db2822206866812f2163cf5b",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T19:13:15.626Z"
+  },
+  "stranger_1788204004151@otherdomain.com": {
+    "salt": "579e62204b282459c6a17ec5e0aae557",
+    "hash": "4be03649438b7efb7ec89da5fb6d97245d30446e72796d14cc53691526c8c7e5d7728b055543d676b7c4cd87492d83cc28b8052532d50e001eed6a1140387739",
+    "name": "Stranger User",
+    "createdAt": "2026-08-31T19:20:04.201Z"
+  },
+  "admin@loanpilot.com": {
+    "salt": "64751b9b9575a23ffa7af067539ea782",
+    "hash": "15cf72330fb69cf9bc03b60d36c30eae3404b36293fe7e912b9cd639ffd4a8343795eb16c983595d872d88fe041b6f5e458528a1ed0a5e8e690420a60abd19e8",
+    "name": "Admin / Owner",
+    "createdAt": "2026-09-04T11:15:36.059Z"
+  },
+  "sales@loanpilot.com": {
+    "salt": "17f1728137797500dd7ea3204695f4ca",
+    "hash": "cfe18f217c2db1d9c520e0b25b23c3e3e6a6e9264ff58d5a590db1e6b440740b34c07cee6855b73d5b324f4cba915c8c6910b9f7970dfb0d64f9820ff02c32c3",
+    "name": "Sales agent",
+    "createdAt": "2026-09-04T11:15:36.135Z"
+  },
+  "ops@loanpilot.com": {
+    "salt": "aab5d15f69674f1c038afa37965a4f98",
+    "hash": "d38b47204050f982fa34987cf493501f1acc58340288d8590b84a129b7e3973694e1c2c5701e76c2894f51c1a2b4d5dc637346aba99298985f547b9761439332",
+    "name": "Operations",
+    "createdAt": "2026-09-04T11:15:36.212Z"
+  },
+  "finance@loanpilot.com": {
+    "salt": "062a1a35db79400845c4e6ce15518022",
+    "hash": "6379b92b60a524f334a68e00c26a7e1efb5391234ea44604a556aa311e527885e17d190ab5749e98e591f5d390734fec0e6b5f624fc8fe13ce2045f79a4d1515",
+    "name": "Finance",
+    "createdAt": "2026-09-04T11:15:36.287Z"
+  },
+  "stranger_1788520538965@otherdomain.com": {
+    "salt": "e6ddeebb5a3080b40b4283741ed2d480",
+    "hash": "013ecfb76af0bcca44aa749d438b18118196a05d078c53ed25939b097a5a23d572e7a874b18a172cd89164d19ff00995faad82f629d0e7f4090addf2ff2e0edd",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T11:15:39.018Z"
+  },
+  "stranger_1788522233840@otherdomain.com": {
+    "salt": "15e6cf3b2fc7aac9199a62da78e749fd",
+    "hash": "cc421978a76717892f7e86a5cea32a0941eb1438375ec6aa64e12e08d1aa2f940197a6d9b8d04acb07bd099a52aa1f5a26cd1319d47714ec6c6f87408e0fda4d",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T11:43:53.887Z"
+  },
+  "stranger_1788527653676@otherdomain.com": {
+    "salt": "51c0a6f3a93c7748b259fe2b1b1fc013",
+    "hash": "d802aa62d982b824626bdbe37ad9eec53d5dd662ea51be4ea33dc6ecf77bc1e6a23aadedf802fcb83ee4d6f6b044de5dc42869cef7ebe7560584e7bd719b42d9",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T13:14:13.728Z"
+  },
+  "stranger_1788527816180@otherdomain.com": {
+    "salt": "fb85dec5516b723fb966ecc8415400e5",
+    "hash": "035e2b5468e9725653e9010e19dbb7d7c2fbc568e18b8a33585a1b9420ee62d94b8c09c16211dbe4d1635375b1863f98cb93f367e3a7ecb98648a630343b48c6",
+    "name": "Stranger User",
+    "createdAt": "2026-09-04T13:16:56.229Z"
+  }
+}

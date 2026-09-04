@@ -1,0 +1,131 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  salt      String
+  hash      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CrmWorkspace {
+  id           String            @id @default(cuid())
+  name         String
+  companyName  String
+  industry     String            @default("Technology")
+  description  String?
+  logoUrl      String?
+  timezone     String            @default("Asia/Kolkata (+05:30)")
+  currency     String            @default("₹ INR")
+  primaryColor String            @default("#1f4fd6")
+  ownerEmail   String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  members      WorkspaceMember[]
+  modules      Module[]
+  activities   Activity[]
+  notes        Note[]
+}
+
+model WorkspaceMember {
+  id        String       @id @default(cuid())
+  crmId     String
+  email     String
+  name      String
+  role      String       @default("employee") // owner, admin, manager, employee, viewer
+  status    String       @default("active")   // active, disabled
+  joinedAt  DateTime     @default(now())
+  crm       CrmWorkspace @relation(fields: [crmId], references: [id], onDelete: Cascade)
+
+  @@unique([crmId, email])
+}
+
+model Module {
+  id           String         @id @default(cuid())
+  crmId        String
+  name         String
+  singularName String
+  key          String
+  icon         String         @default("folder")
+  description  String?
+  isSystem     Boolean        @default(false)
+  order        Int            @default(1)
+  createdAt    DateTime       @default(now())
+  crm          CrmWorkspace   @relation(fields: [crmId], references: [id], onDelete: Cascade)
+  fields       ModuleField[]
+  records      ModuleRecord[]
+
+  @@unique([crmId, key])
+}
+
+model ModuleField {
+  id                   String   @id @default(cuid())
+  crmId                String
+  moduleId             String
+  name                 String
+  key                  String
+  type                 String   @default("text") // text, textarea, number, currency, email, phone, date, datetime, select, multiselect, checkbox, radio, url, user, relationship, autonumber
+  required             Boolean  @default(false)
+  defaultValue         String?
+  options              String?  // JSON string or comma-delimited options
+  placeholder          String?
+  order                Int      @default(1)
+  isSystem             Boolean  @default(false)
+  relationshipModuleId String?
+  autoNumberPrefix     String?
+  autoNumberDigits     Int      @default(4)
+  createdAt            DateTime @default(now())
+  module               Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([moduleId, key])
+}
+
+model ModuleRecord {
+  id            String   @id @default(cuid())
+  crmId         String
+  moduleId      String
+  data          String   // JSON string of record key-values
+  createdBy     String
+  createdByName String?
+  updatedBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  module        Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id              String       @id @default(cuid())
+  crmId           String
+  moduleId        String?
+  recordId        String?
+  type            String       @default("note")
+  title           String
+  description     String?
+  performedBy     String
+  performedByName String?
+  createdAt       DateTime     @default(now())
+  crm             CrmWorkspace @relation(fields: [crmId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id            String       @id @default(cuid())
+  crmId         String
+  moduleId      String?
+  recordId      String?
+  title         String       @default("Note")
+  content       String
+  createdBy     String
+  createdByName String?
+  createdAt     DateTime     @default(now())
+  crm           CrmWorkspace @relation(fields: [crmId], references: [id], onDelete: Cascade)
+}

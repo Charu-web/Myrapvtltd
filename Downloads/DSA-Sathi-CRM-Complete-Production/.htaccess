@@ -1,0 +1,46 @@
+# DSA Sathi CRM — Production Apache / Hostinger / cPanel Configuration
+
+DirectoryIndex index.html login.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Block direct access to sensitive backend files
+  RewriteRule ^(\.env|\.git|users\.json|data/|crm_db\.json) - [F,L]
+
+  # 2. If the requested filename or directory exists, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Exclude API endpoints and POST/PUT/DELETE requests from static HTML rewrites
+  RewriteCond %{REQUEST_URI} ^/api/ [OR]
+  RewriteCond %{REQUEST_URI} ^/config\.js [OR]
+  RewriteCond %{REQUEST_URI} ^/env\.js [OR]
+  RewriteCond %{REQUEST_METHOD} !^GET$
+  RewriteRule ^ - [L]
+
+  # 4. Explicit HTML Page Route Mappings (GET requests only)
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^login/?$ login.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^crm/?$ crm.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^onboarding/?$ onboarding.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^index/?$ index.html [L,QSA]
+
+  # 5. SPA Route Fallbacks for CRM Dashboard & Sub-modules (GET requests only)
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^crm/.* crm.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^(dashboard|overview|ask-ai|setup|team|reports|finance|hr|marketing|wallet|calculators|verifications|utility)/?$ crm.html [L,QSA]
+
+  # 6. Default root and fallback routing (GET requests only)
+  RewriteRule ^$ index.html [L,QSA]
+  RewriteCond %{REQUEST_METHOD} GET
+  RewriteRule ^.*$ index.html [L]
+</IfModule>
+
+# Note: CORS headers are managed dynamically by the Node backend server to support credentials safely.

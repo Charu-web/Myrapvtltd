@@ -1,0 +1,47 @@
+# DSA Sathi CRM — Production Apache / Hostinger Configuration
+
+DirectoryIndex index.html login.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Block direct access to sensitive backend files
+  RewriteRule ^(\.env|\.git|users\.json|data/|crm_db\.json) - [F,L]
+
+  # 2. If the requested filename or directory exists, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Explicit HTML Page Route Mappings
+  RewriteRule ^login/?$ login.html [L,QSA]
+  RewriteRule ^crm/?$ crm.html [L,QSA]
+  RewriteRule ^onboarding/?$ onboarding.html [L,QSA]
+  RewriteRule ^index/?$ index.html [L,QSA]
+
+  # 4. SPA Route Fallbacks for CRM Dashboard & Sub-modules
+  RewriteRule ^crm/.* crm.html [L,QSA]
+  RewriteRule ^dashboard/?$ crm.html [L,QSA]
+  RewriteRule ^overview/?$ crm.html [L,QSA]
+  RewriteRule ^ask-ai/?$ crm.html [L,QSA]
+  RewriteRule ^setup/?$ crm.html [L,QSA]
+  RewriteRule ^team/?$ crm.html [L,QSA]
+  RewriteRule ^reports/?$ crm.html [L,QSA]
+  RewriteRule ^finance/?$ crm.html [L,QSA]
+  RewriteRule ^hr/?$ crm.html [L,QSA]
+  RewriteRule ^marketing/?$ crm.html [L,QSA]
+  RewriteRule ^wallet/?$ crm.html [L,QSA]
+  RewriteRule ^calculators/?$ crm.html [L,QSA]
+  RewriteRule ^verifications/?$ crm.html [L,QSA]
+  RewriteRule ^utility/?$ crm.html [L,QSA]
+
+  # 5. Default root and fallback routing
+  RewriteRule ^$ index.html [L,QSA]
+  RewriteRule ^.*$ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Credentials "true"
+</IfModule>

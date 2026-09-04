@@ -1,0 +1,22 @@
+{
+  "name": "loanpilot-crm-platform",
+  "version": "1.0.0",
+  "description": "Multi-Tenant SaaS CRM Platform with Dynamic Module Builder, Custom Fields, Session Authentication, and Data Isolation.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "prisma:generate": "node --use-system-ca node_modules/prisma/build/index.js generate",
+    "seed": "node seed.js",
+    "test": "node test-crm-suite.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
