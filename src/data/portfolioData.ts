@@ -227,31 +227,34 @@ export const ALL_PROJECTS: FeaturedProject[] = [
   {
     id: 'yuvahub',
     title: 'YuvaHub — Naukri Mahotsav 2026',
-    category: 'Full-Stack Gov / Employment Platform',
+    category: 'Full-Stack Web Application / Government & Employment Platform',
     filterCategory: 'Web',
-    tagline: 'Full-stack employment portal & admin panel with persistent cloud database & PVC job card generator',
+    tagline: 'Full-stack employment portal & admin panel for Naukri Mahotsav 2026 with persistent cloud database & digital pass generator',
     description:
-      'Production employment portal connecting thousands of job seekers with corporate recruiters across Maharashtra. Features candidate registrations, digital PVC Job Card pass generation, serverless Express backend, Netlify Blobs database, and an authenticated administrative dashboard.',
+      'A complete employment and job-registration platform for Naukri Mahotsav 2026, including candidate registration, digital Job Card generation and lookup, persistent candidate data, Admin Panel, authentication, candidate management, search/filter, status updates and CSV export.',
     highlight:
-      'Engineered end-to-end full-stack architecture with Netlify Functions, persistent cloud storage, real-time candidate search/filtering, bcrypt-secured admin authentication, and automated CSV reporting.',
-    technologies: ['React.js', 'Node.js', 'Express.js', 'Netlify Functions', '@netlify/blobs', 'Tailwind CSS', 'REST APIs'],
+      'Full-stack serverless architecture with Netlify Functions, persistent cloud storage (@netlify/blobs), bcrypt admin authentication, real-time candidate search/filter, and automated CSV export.',
+    technologies: ['React', 'Node.js', 'Express', 'Serverless', 'Database', 'Admin Panel', 'REST API'],
     liveUrl: 'https://cozy-sable-726aa1.netlify.app',
     githubUrl: 'https://github.com/Charu-web/yuvahub',
     visualType: 'yuvahub',
     caseStudy: {
       overview:
-        'YuvaHub (Naukri Mahotsav 2026) is a high-traffic employment recruitment portal built for Dharashiv constituency, enabling thousands of job seekers to register, receive unique digital candidate passes, and be matched with 50+ participating corporate employers.',
+        'YuvaHub (Naukri Mahotsav 2026) is a high-traffic employment recruitment platform built for Dharashiv constituency, enabling thousands of job seekers to register, receive unique digital candidate passes, and be matched with 50+ participating corporate employers.',
       problem:
         'Large-scale job fairs traditionally suffer from unorganized on-ground candidate lines, lost physical resumes, lack of live applicant analytics for administrative teams, and fragile database hosting during traffic spikes.',
       solution:
         'Architected a resilient serverless full-stack web application with Netlify Functions and Netlify Blobs persistent cloud database, instant unique Job Card generation, responsive Marathi bilingual UI, and a secure real-time administrative command center.',
       keyFeatures: [
-        'Multi-step candidate registration with instant unique candidate ID generation (MP-JOB-2026-XXXXXX)',
-        'Digital PVC Job Card generation and public verification lookup system',
-        'Secure admin portal with bcrypt-hashed credentials and token-based session management',
-        'Live administrative analytics dashboard tracking registration volume, district distribution, and education levels',
-        'Instant multi-field candidate search, filtering, status verification workflows, and UTF-8 CSV exports',
-        'Fully responsive bilingual (Marathi / English) UI optimized for mobile devices'
+        'Candidate Registration with instant unique candidate ID generation (MP-JOB-2026-XXXXXX)',
+        'Digital Job Card generation & Job Card Unique Code lookup',
+        'Persistent candidate database using Netlify Blobs with strong consistency',
+        'Secure Admin Login/Logout with bcrypt password hashing & session management',
+        'Admin Dashboard with registration analytics, district & qualification metrics',
+        'Candidate Search & Filters across multi-field criteria',
+        'Candidate Details view & Candidate Status Updates (Verified/Approved/Pending)',
+        'Automated UTF-8 BOM CSV Export for administrative reporting',
+        'Mobile-first responsive bilingual UI design'
       ],
       technicalImplementation: [
         'Developed modular React.js frontend with Tailwind CSS and Vite, optimized for high Lighthouse performance scores.',
