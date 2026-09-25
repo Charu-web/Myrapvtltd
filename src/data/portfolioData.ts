@@ -15,7 +15,7 @@ export const PERSONAL_INFO = {
   availability: 'Available for full-time & freelance projects',
   email: 'csonker04@gmail.com',
   github: 'https://github.com/Charu-web',
-  linkedin: 'https://linkedin.com/in',
+  linkedin: 'https://www.linkedin.com/in/charu-sonker-196910250',
   location: 'Lucknow, India',
   about:
     'I’m a Full Stack Developer focused on building responsive, scalable web applications and AI-integrated digital products. I work across frontend, backend, databases and real-time systems, with a strong focus on turning ideas into practical production-ready applications.',
@@ -226,18 +226,53 @@ export const ALL_PROJECTS: FeaturedProject[] = [
   },
   {
     id: 'yuvahub',
-    title: 'YuvaHub',
-    category: 'Community & Career Portal',
+    title: 'YuvaHub — Naukri Mahotsav 2026',
+    category: 'Full-Stack Gov / Employment Platform',
     filterCategory: 'Web',
-    tagline: 'Career development & community platform with interactive directory filters',
+    tagline: 'Full-stack employment portal & admin panel with persistent cloud database & PVC job card generator',
     description:
-      'A responsive web portal connecting users to career development resources, event listings, community discussions, and mentorship opportunities.',
+      'Production employment portal connecting thousands of job seekers with corporate recruiters across Maharashtra. Features candidate registrations, digital PVC Job Card pass generation, serverless Express backend, Netlify Blobs database, and an authenticated administrative dashboard.',
     highlight:
-      'Implemented clean navigation architecture, interactive directory filters, dynamic data fetching, and mobile-first layouts.',
-    technologies: ['React.js', 'JavaScript', 'Node.js', 'CSS3', 'REST APIs'],
-    liveUrl: 'https://charu-web.github.io/yuvahub/',
+      'Engineered end-to-end full-stack architecture with Netlify Functions, persistent cloud storage, real-time candidate search/filtering, bcrypt-secured admin authentication, and automated CSV reporting.',
+    technologies: ['React.js', 'Node.js', 'Express.js', 'Netlify Functions', '@netlify/blobs', 'Tailwind CSS', 'REST APIs'],
+    liveUrl: 'https://cozy-sable-726aa1.netlify.app',
     githubUrl: 'https://github.com/Charu-web/yuvahub',
     visualType: 'yuvahub',
+    caseStudy: {
+      overview:
+        'YuvaHub (Naukri Mahotsav 2026) is a high-traffic employment recruitment portal built for Dharashiv constituency, enabling thousands of job seekers to register, receive unique digital candidate passes, and be matched with 50+ participating corporate employers.',
+      problem:
+        'Large-scale job fairs traditionally suffer from unorganized on-ground candidate lines, lost physical resumes, lack of live applicant analytics for administrative teams, and fragile database hosting during traffic spikes.',
+      solution:
+        'Architected a resilient serverless full-stack web application with Netlify Functions and Netlify Blobs persistent cloud database, instant unique Job Card generation, responsive Marathi bilingual UI, and a secure real-time administrative command center.',
+      keyFeatures: [
+        'Multi-step candidate registration with instant unique candidate ID generation (MP-JOB-2026-XXXXXX)',
+        'Digital PVC Job Card generation and public verification lookup system',
+        'Secure admin portal with bcrypt-hashed credentials and token-based session management',
+        'Live administrative analytics dashboard tracking registration volume, district distribution, and education levels',
+        'Instant multi-field candidate search, filtering, status verification workflows, and UTF-8 CSV exports',
+        'Fully responsive bilingual (Marathi / English) UI optimized for mobile devices'
+      ],
+      technicalImplementation: [
+        'Developed modular React.js frontend with Tailwind CSS and Vite, optimized for high Lighthouse performance scores.',
+        'Engineered 15 RESTful API endpoints utilizing Express.js bundled into Netlify Serverless Functions.',
+        'Integrated @netlify/blobs persistent cloud key-value store with strong consistency across serverless cold starts.',
+        'Implemented cryptographically secure session authentication guard middleware protecting sensitive admin APIs.',
+        'Built automated UTF-8 BOM CSV generation pipeline for on-demand candidate dataset exports.'
+      ],
+      technologyStack: [
+        { category: 'Frontend', tools: ['React.js', 'Vite', 'Tailwind CSS', 'Lucide React'] },
+        { category: 'Serverless Backend', tools: ['Node.js', 'Express.js', 'Netlify Functions', 'serverless-http'] },
+        { category: 'Database & Storage', tools: ['@netlify/blobs (Strong Consistency)', 'JSON Store'] },
+        { category: 'Security & Auth', tools: ['Bcrypt.js', 'Crypto Bearer Tokens', 'Admin RBAC Guard'] }
+      ],
+      challenges: [
+        'Ensuring zero data loss across ephemeral serverless function cold starts without incurring expensive database cluster overhead.',
+        'Formatting Marathi Unicode text accurately across CSV spreadsheet exports on different operating systems.'
+      ],
+      outcome:
+        'Delivered a robust, high-performance web platform actively deployed in production on Netlify, facilitating seamless candidate enrollment and live administration for thousands of applicants.'
+    }
   },
   {
     id: 'dsa-sathi-crm',
@@ -275,15 +310,28 @@ export const FEATURED_PROJECTS = ALL_PROJECTS;
 
 export const EXPERIENCE_ITEMS: ExperienceItem[] = [
   {
-    id: 'empire-it-xpert',
-    company: 'Empire IT Xpert',
-    role: 'Web & Mobile App Developer',
-    period: 'Current',
+    id: 'volna-technologies',
+    company: 'Volna Technologies',
+    role: 'Full Stack Developer',
+    period: 'July 2026 – October 2026 (Expected)',
     status: 'CURRENT',
     responsibilities: [
-      'Building and maintaining production-ready web and mobile applications using modern JavaScript frameworks.',
-      'Implementing responsive user interfaces, RESTful API integrations, and client-side performance optimizations.',
-      'Collaborating on client requirements, debugging complex workflows, and deploying scalable digital features.',
+      'Developed and maintained responsive full-stack web applications and reusable UI components using React.js and modern JavaScript (ES6+).',
+      'Built and integrated robust RESTful API endpoints and backend services with Node.js and Express.js, handling client-side state and async data pipelines.',
+      'Designed and optimized MongoDB database schemas, ensuring data integrity, efficient queries, and reliable data synchronization.',
+    ],
+    technologies: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'JavaScript'],
+  },
+  {
+    id: 'empire-it-xpert',
+    company: 'Empire IT Xpert',
+    role: 'Web Developer Intern',
+    period: 'April 2026 – June 2026',
+    status: 'PREVIOUS',
+    responsibilities: [
+      'Engineered responsive front-end interfaces, dynamic workflows, and dashboards for CRM and web applications (DSA CRM, DSA Sathi CRM, HDA Production, YuvaHub) using React.js and Tailwind CSS.',
+      'Implemented backend REST APIs with Node.js and Express.js, integrating Role-Based Access Control (RBAC), multi-stage lead tracking, and secure authentication workflows.',
+      'Collaborated on Git/GitHub version control workflows for client requirements, sprint feature delivery, and cross-browser production deployments.',
     ],
     technologies: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'Tailwind CSS'],
   },
@@ -291,12 +339,13 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     id: 'hi-tech-engineering',
     company: 'Hi-Tech Engineering',
     role: 'Web Developer Intern',
-    period: 'Jun 2024 – Aug 2024',
+    period: 'July 2025 – September 2025',
     status: 'PREVIOUS',
     responsibilities: [
-      'Developed responsive frontend layouts, interactive user components, and cross-browser styling.',
-      'Assisted in backend API consumption, form validation logic, and client-side data handling.',
-      'Participated in code reviews, bug fixes, and testing across diverse viewport resolutions.',
+      'Shipped 3+ responsive MERN stack applications, lifting cross-device compatibility by 40% and cutting data-fetch latency by 25% through optimized REST API integration.',
+      'Redesigned MongoDB schemas and implemented indexing for Node.js/Express services, improving database query performance by 30%.',
+      'Raised Core Web Vitals scores by 35% through lazy loading, code splitting, and asset compression.',
+      'Collaborated within a 5-member Agile team using Git and GitHub for version control and sprint delivery.',
     ],
     technologies: ['JavaScript', 'HTML5', 'CSS3', 'Bootstrap', 'REST APIs', 'Git'],
   },
@@ -308,42 +357,42 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     number: '01',
     title: 'Languages',
     description: 'Core programming languages',
-    skills: ['JavaScript', 'C++', 'SQL', 'Python'],
+    skills: ['JavaScript', 'Python', 'C++', 'SQL'],
   },
   {
     id: 'frontend',
     number: '02',
     title: 'Frontend',
     description: 'Client-side web development',
-    skills: ['React.js', 'Redux', 'HTML5', 'CSS3', 'Tailwind CSS', 'Bootstrap'],
+    skills: ['React.js', 'Redux', 'HTML5', 'CSS3', 'Tailwind CSS', 'Bootstrap', 'iOS', 'Responsive Design'],
   },
   {
     id: 'backend',
     number: '03',
     title: 'Backend',
     description: 'Server architecture & APIs',
-    skills: ['Node.js', 'Express.js', 'REST APIs', 'Socket.io', 'JWT'],
+    skills: ['Node.js', 'Express.js', 'REST APIs', 'WebSockets', 'Socket.io', 'JWT', 'SaaS'],
   },
   {
     id: 'ai-ml',
     number: '04',
     title: 'AI / ML',
     description: 'Machine learning & AI integration',
-    skills: ['OpenAI GPT-4 API', 'Prompt Engineering', 'TensorFlow.js', 'Generative AI Integration'],
+    skills: ['OpenAI API', 'Prompt Engineering', 'TensorFlow.js', 'Generative AI Integration', 'AI Tools'],
   },
   {
     id: 'database',
     number: '05',
     title: 'Database',
     description: 'Data storage & querying',
-    skills: ['MongoDB', 'Mongoose', 'SQL'],
+    skills: ['MongoDB', 'Mongoose', 'SQL', 'Supabase', 'Schema Design', 'Query Optimization'],
   },
   {
     id: 'tools',
     number: '06',
-    title: 'Tools',
+    title: 'Tools & DevOps',
     description: 'Developer tooling & DevOps',
-    skills: ['Git', 'GitHub', 'Postman', 'VS Code', 'Netlify', 'Render'],
+    skills: ['Git', 'GitHub', 'Docker', 'AWS', 'Postman', 'VS Code', 'Vercel', 'Netlify', 'Render', 'CI/CD', 'Agile'],
   },
 ];
 
